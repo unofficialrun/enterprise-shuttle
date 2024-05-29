@@ -1,6 +1,6 @@
-import { HubRpcClient, Message, MessageType } from "@farcaster/hub-nodejs";
-import { DB, MessageRow } from "./db";
-import { pino } from "pino";
+import { type HubRpcClient, type Message, MessageType } from "@farcaster/hub-nodejs";
+import type { DB, MessageRow } from "./db";
+import type { pino } from "pino";
 
 const MAX_PAGE_SIZE = 3_000;
 

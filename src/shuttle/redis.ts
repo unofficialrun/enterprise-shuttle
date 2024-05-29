@@ -1,4 +1,4 @@
-import { Redis, RedisOptions } from "ioredis";
+import { Redis, type RedisOptions } from "ioredis";
 
 export const getRedisClient = (redisUrl: string, redisOpts?: RedisOptions) => {
     const client = new Redis(redisUrl, {
@@ -30,7 +30,7 @@ export class RedisClient {
 
     async getLastProcessedEvent(hubId: string) {
         const eventId = await this.client.get(`hub:${hubId}:last-hub-event-id`);
-        return eventId ? parseInt(eventId) : 0;
+        return eventId ? Number.parseInt(eventId) : 0;
     }
 
     async clearForTest() {

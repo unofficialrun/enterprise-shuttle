@@ -1,5 +1,5 @@
-import { Message, MessageType } from "@farcaster/hub-nodejs";
-import { DB } from "./db";
+import type { Message, MessageType } from "@farcaster/hub-nodejs";
+import type { DB } from "./db";
 
 export * from "./db";
 export * from "./redis";

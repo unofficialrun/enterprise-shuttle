@@ -1,8 +1,8 @@
 import { Message, validations } from "@farcaster/hub-nodejs";
-import { DB, InsertableMessageRow } from "./db";
+import type { DB, InsertableMessageRow } from "./db";
 import { bytesToHex, convertProtobufMessageBodyToJson, farcasterTimeToDate } from "../utils";
-import { pino } from "pino";
-import { HubEventProcessor, StoreMessageOperation } from "./index";
+import type { pino } from "pino";
+import type { StoreMessageOperation } from "./index";
 
 export class MessageProcessor {
     static async storeMessages(
@@ -16,9 +16,9 @@ export class MessageProcessor {
             const body = convertProtobufMessageBodyToJson(message);
 
             return {
-                fid: message.data!.fid,
-                type: message.data!.type,
-                timestamp: farcasterTimeToDate(message.data!.timestamp),
+                fid: message.data.fid,
+                type: message.data.type,
+                timestamp: farcasterTimeToDate(message.data.timestamp),
                 hashScheme: message.hashScheme,
                 signatureScheme: message.signatureScheme,
                 hash: message.hash,
