@@ -1,11 +1,11 @@
 import type { Redis } from "ioredis";
 import { type Job, Queue, Worker } from "bullmq";
-import type { App } from "./app.service";
+import type { AppHandler } from "./app.command";
 import type { pino } from "pino";
 
 const QUEUE_NAME = "default";
 
-export function getWorker(app: App, redis: Redis, log: pino.Logger, concurrency = 1) {
+export function getWorker(app: AppHandler, redis: Redis, log: pino.Logger, concurrency = 1) {
     const worker = new Worker(
         QUEUE_NAME,
         async (job: Job) => {
