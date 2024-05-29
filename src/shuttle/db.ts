@@ -1,21 +1,21 @@
 import pg from "pg";
 import {
     CamelCasePlugin,
-    DeleteQueryBuilder,
-    Generated,
-    InsertQueryBuilder,
+    type DeleteQueryBuilder,
+    type Generated,
+    type InsertQueryBuilder,
     Kysely,
-    NoResultErrorConstructor,
+    type NoResultErrorConstructor,
     PostgresDialect,
-    QueryNode,
-    Selectable,
-    Insertable,
-    SelectQueryBuilder,
+    type QueryNode,
+    type Selectable,
+    type Insertable,
+    type SelectQueryBuilder,
     sql,
-    Transaction,
-    UpdateQueryBuilder,
+    type Transaction,
+    type UpdateQueryBuilder,
 } from "kysely";
-import {
+import type {
     HashScheme,
     MessageType,
     ReactionType,
@@ -23,7 +23,7 @@ import {
     UserDataType,
     UserNameType,
 } from "@farcaster/hub-nodejs";
-import { DrainOuterGeneric, SimplifySingleResult } from "kysely/dist/cjs/util/type-utils.js";
+import type { DrainOuterGeneric, SimplifySingleResult } from "kysely/dist/cjs/util/type-utils.js";
 
 import Cursor from "pg-cursor";
 import { extendStackTrace } from "../utils";
