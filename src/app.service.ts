@@ -1,7 +1,6 @@
-import { Injectable, Logger, OnApplicationBootstrap, type OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   type DB,
-  getDbClient,
   getHubClient,
   type MessageHandler,
   type StoreMessageOperation,
@@ -13,7 +12,7 @@ import {
   HubEventStreamConsumer,
   type HubSubscriber,
   type MessageState,
-} from "@farcaster/shuttle";
+} from "./shuttle";
 import {
   BACKFILL_FIDS,
   CONCURRENCY,
@@ -21,30 +20,30 @@ import {
   HUB_SSL,
   MAX_FID,
   POSTGRES_URL,
-  REDIS_URL,
   REDISHOST,
   REDISPORT,
   SHARD_INDEX,
   TOTAL_SHARDS,
 } from "./env";
-import { bytesToHexString, type HubEvent, isCastAddMessage, isCastRemoveMessage, type Message } from "@farcaster/hub-nodejs";
+import { bytesToHexString, type HubEvent, type Message, MessageType } from "@farcaster/hub-nodejs";
 import { log } from "./log";
-import { readFileSync } from "node:fs";
-import * as process from "node:process";
-import url from "node:url";
-import { ok, Result } from "neverthrow";
+import { ok } from "neverthrow";
 import type { Queue } from "bullmq";
-import { type AppDb, migrateToLatest, Tables } from "./db";
-import { farcasterTimeToDate } from "./utils";
+import { type AppDb, migrateToLatest } from "./db";
 import { getQueue, getWorker } from "./worker";
 import { InjectKysely } from 'nestjs-kysely';
+import { insertCasts, deleteCasts } from './processors/cast';
+import { insertLinks, deleteLinks } from './processors/link';
+import { insertReactions, deleteReactions } from './processors/reaction';
+import { insertUserDatas } from './processors/user-data';
+import { insertVerifications, deleteVerifications } from './processors/verification';
 
 @Injectable()
 export class AppService {
   private readonly logger = new Logger(AppService.name);
   constructor(
     @InjectKysely() private readonly db: DB,
-  ) {}
+  ) { }
 
   async start() {
     log.info(`Creating app connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
@@ -124,6 +123,44 @@ export class App implements MessageHandler {
     return new App(db, redis, hubSubscriber, streamConsumer);
   }
 
+  static async processMessagesOfType(messages: Message[], type: MessageType, db: AppDb): Promise<void> {
+    if (type === MessageType.CAST_ADD) {
+      await insertCasts(messages, db)
+    } else if (type === MessageType.CAST_REMOVE) {
+      await deleteCasts(messages, db)
+    } else if (type === MessageType.VERIFICATION_ADD_ETH_ADDRESS) {
+      await insertVerifications(messages, db)
+    } else if (type === MessageType.VERIFICATION_REMOVE) {
+      await deleteVerifications(messages, db)
+    } else if (type === MessageType.USER_DATA_ADD) {
+      await insertUserDatas(messages, db)
+    } else if (type === MessageType.REACTION_ADD) {
+      await insertReactions(messages, db)
+    } else if (type === MessageType.REACTION_REMOVE) {
+      await deleteReactions(messages, db)
+    } else if (type === MessageType.LINK_ADD) {
+      await insertLinks(messages, db)
+    } else if (type === MessageType.LINK_REMOVE) {
+      await deleteLinks(messages, db)
+    }
+  }
+
+  async handleMessagesMergeOfType(
+    messages: Message[],
+    type: MessageType,
+    txn: DB,
+    // Assume this is always merge and missed and new
+    // operation: StoreMessageOperation,
+    // state: MessageState,
+    // isNew: boolean,
+    // wasMissed: boolean,
+  ): Promise<void> {
+    const appDB = txn as unknown as AppDb;
+
+    if (messages.length > 0)
+      await App.processMessagesOfType(messages, type, appDB);
+  }
+
   async handleMessageMerge(
     message: Message,
     txn: DB,
@@ -143,24 +180,8 @@ export class App implements MessageHandler {
     // Note that since we're relying on "state", this can sometimes be invoked twice. e.g. when a CastRemove is merged, this call will be invoked 2 twice:
     // castAdd, operation=delete, state=deleted (the cast that the remove is removing)
     // castRemove, operation=merge, state=deleted (the actual remove message)
-    const isCastMessage = isCastAddMessage(message) || isCastRemoveMessage(message);
-    if (isCastMessage && state === "created") {
-      await appDB
-        .insertInto("casts")
-        .values({
-          fid: message.data.fid,
-          hash: message.hash,
-          text: message.data.castAddBody?.text || "",
-          timestamp: farcasterTimeToDate(message.data.timestamp) || new Date(),
-        })
-        .execute();
-    } else if (isCastMessage && state === "deleted") {
-      await appDB
-        .updateTable("casts")
-        .set({ deletedAt: farcasterTimeToDate(message.data.timestamp) || new Date() })
-        .where("hash", "=", message.hash)
-        .execute();
-    }
+    if (message.data?.type)
+      await App.processMessagesOfType([message], message.data?.type, appDB)
 
     const messageDesc = wasMissed ? `missed message (${operation})` : `message (${operation})`;
     this.logger.debug(`${state} ${messageDesc} ${bytesToHexString(message.hash)._unsafeUnwrap()} (type ${message.data?.type})`);
@@ -184,21 +205,19 @@ export class App implements MessageHandler {
   }
 
   async reconcileFids(fids: number[]) {
+    // log.info(`Reconciling messages for FIDs: ${fids}`)
     // biome-ignore lint/style/noNonNullAssertion: client is always initialized
     const reconciler = new MessageReconciliation(this.hubSubscriber.hubClient!, this.db, log);
     for (const fid of fids) {
-      await reconciler.reconcileMessagesForFid(fid, async (message, missingInDb, prunedInDb, revokedInDb) => {
-        if (missingInDb) {
-          await HubEventProcessor.handleMissingMessage(this.db, message, this);
-        } else if (prunedInDb || revokedInDb) {
-          const messageDesc = prunedInDb ? "pruned" : revokedInDb ? "revoked" : "existing";
-          this.logger.debug(`Reconciled ${messageDesc} message ${bytesToHexString(message.hash)._unsafeUnwrap()}`);
-        }
+      await reconciler.reconcileMessagesForFid(fid, async (messages, type) => {
+        const missingInDb = messages.filter((msg) => msg.missingInDb);
+        await HubEventProcessor.handleMissingMessagesOfType(this.db, missingInDb, type, this);
       });
     }
   }
 
   async backfillFids(fids: number[], backfillQueue: Queue) {
+    await this.ensureMigrations();
     const startedAt = Date.now();
     if (fids.length === 0) {
       const maxFidResult = await this.hubSubscriber.hubClient?.getFids({ pageSize: 1, reverse: true });

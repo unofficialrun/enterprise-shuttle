@@ -5,7 +5,7 @@ export const COLORIZE =
 export const LOG_LEVEL = process.env["LOG_LEVEL"] || "info";
 
 export const HUB_HOST = process.env["HUB_HOST"] || "localhost:2283";
-export const HUB_SSL = process.env["HUB_SSL"] === "true" ? true : false;
+export const HUB_SSL = process.env["HUB_SSL"]  === "true";
 
 export const POSTGRES_URL = process.env["POSTGRES_URL"] || "postgres://localhost:5432";
 export const REDIS_URL = process.env["REDIS_URL"] || "redis://localhost:6379";

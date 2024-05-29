@@ -1,4 +1,4 @@
-import { Kysely, sql } from "kysely";
+import { type Kysely, sql } from "kysely";
 
 // biome-ignore lint/suspicious/noExplicitAny: legacy code, avoid using ignore for new code
 export const up = async (db: Kysely<any>) => {
@@ -231,6 +231,7 @@ export const up = async (db: Kysely<any>) => {
         .execute()
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: TODO: remove any
 export const down = async (db: Kysely<any>) => {
     // Delete in reverse order of above so that foreign keys are not violated.
     await db.schema.dropTable('userData').ifExists().execute()
