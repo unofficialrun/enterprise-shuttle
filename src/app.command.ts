@@ -26,7 +26,6 @@ import {
   TOTAL_SHARDS,
 } from "./env";
 import { bytesToHexString, type HubEvent, type Message, MessageType } from "@farcaster/hub-nodejs";
-import { log } from "./log";
 import { ok } from "neverthrow";
 import type { Queue } from "bullmq";
 import { type AppDb, migrateToLatest } from "./db";
@@ -83,14 +82,14 @@ export class AppShuttleCommand extends CommandRunner {
     await app.backfillFids(fids, backfillQueue);
 
     // Start the worker after initiating a backfill
-    const worker = getWorker(app, app.redis.client, log, CONCURRENCY);
+    const worker = getWorker(app, app.redis.client, this.logger, CONCURRENCY);
     await worker.run();
   }
 
   private async worker() {
     this.logger.log(`Starting worker connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
     const app = AppHandler.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
-    const worker = getWorker(app, app.redis.client, log, CONCURRENCY);
+    const worker = getWorker(app, app.redis.client, this.logger, CONCURRENCY);
     await worker.run();
   }
 }
@@ -127,6 +126,7 @@ export class AppHandler implements MessageHandler {
     const eventStreamForWrite = new EventStreamConnection(redis.client);
     const eventStreamForRead = new EventStreamConnection(redis.client);
     const shardKey = totalShards === 0 ? "all" : `${shardIndex}`;
+    const log = new Logger(AppHandler.name);
     const hubSubscriber = new EventStreamHubSubscriber(
       hubId,
       hub,
@@ -227,7 +227,7 @@ export class AppHandler implements MessageHandler {
   async reconcileFids(fids: number[]) {
     // log.info(`Reconciling messages for FIDs: ${fids}`)
     // biome-ignore lint/style/noNonNullAssertion: client is always initialized
-    const reconciler = new MessageReconciliation(this.hubSubscriber.hubClient!, this.db, log);
+    const reconciler = new MessageReconciliation(this.hubSubscriber.hubClient!, this.db, this.logger);
     for (const fid of fids) {
       await reconciler.reconcileMessagesForFid(fid, async (messages, type) => {
         const missingInDb = messages.filter((msg) => msg.missingInDb);
@@ -276,7 +276,7 @@ export class AppHandler implements MessageHandler {
   }
 
   async ensureMigrations() {
-    const result = await migrateToLatest(this.db, log);
+    const result = await migrateToLatest(this.db, this.logger);
     if (result.isErr()) {
       this.logger.debug("Failed to migrate database", result.error);
       throw result.error;

@@ -1,11 +1,11 @@
-import { ClientReadableStream, HubEvent, HubEventType, HubResult, HubRpcClient } from "@farcaster/hub-nodejs";
-import { err, ok, Result } from "neverthrow";
-import { Logger } from "../log";
+import { type ClientReadableStream, HubEvent, HubEventType, HubResult, type HubRpcClient } from "@farcaster/hub-nodejs";
+import { err, ok, type Result } from "neverthrow";
+import type { Logger } from '@nestjs/common';
 import { TypedEmitter } from "tiny-typed-emitter";
-import { EventStreamConnection } from "./eventStream";
+import type { EventStreamConnection } from "./eventStream";
 import { sleep } from "../utils";
-import { RedisClient } from "./redis";
-import { HubClient } from "./hub";
+import type { RedisClient } from "./redis";
+import type { HubClient } from "./hub";
 
 interface HubEventsEmitter {
     event: (hubEvent: HubEvent) => void;
@@ -74,7 +74,7 @@ export class BaseHubSubscriber extends HubSubscriber {
     public override stop() {
         this.stream?.cancel();
         this.stopped = true;
-        this.log.info(`Stopped HubSubscriber ${this.label}`);
+        this.log.log(`Stopped HubSubscriber ${this.label}`);
     }
 
     public override destroy() {
@@ -91,18 +91,18 @@ export class BaseHubSubscriber extends HubSubscriber {
     }
 
     public override async start() {
-        this.log.info(`Starting HubSubscriber ${this.label}`);
+        this.log.log(`Starting HubSubscriber ${this.label}`);
 
         const hubClientReady = await this._waitForReadyHubClient();
         if (hubClientReady.isErr()) {
             this.log.error(`HubSubscriber ${this.label} failed to connect to hub: ${hubClientReady.error}`);
             throw hubClientReady.error;
         }
-        this.log.info(`HubSubscriber ${this.label} connected to hub`);
+        this.log.log(`HubSubscriber ${this.label} connected to hub`);
 
         const fromId = await this.getLastEventId();
         if (fromId) {
-            this.log.info(`HubSubscriber ${this.label} Found last hub event ID: ${fromId}`);
+            this.log.log(`HubSubscriber ${this.label} Found last hub event ID: ${fromId}`);
         } else {
             this.log.warn("No last hub event ID found, starting from beginning");
         }
@@ -117,7 +117,7 @@ export class BaseHubSubscriber extends HubSubscriber {
         const subscribeRequest = await this.hubClient.subscribe(subscribeParams);
         subscribeRequest
             .andThen((stream) => {
-                this.log.info(
+                this.log.log(
                     `HubSubscriber ${this.label} subscribed to hub events (types ${JSON.stringify(this.eventTypes)}, shard: ${this.shardIndex
                     }/${this.totalShards})`,
                 );
@@ -125,7 +125,7 @@ export class BaseHubSubscriber extends HubSubscriber {
                 this.stopped = false;
 
                 stream.on("close", async () => {
-                    this.log.info(`HubSubscriber ${this.label} stream closed`);
+                    this.log.log(`HubSubscriber ${this.label} stream closed`);
                     this.stopped = true;
                     this.stream = null;
                 });
@@ -157,10 +157,10 @@ export class BaseHubSubscriber extends HubSubscriber {
             } catch (e: any) {
                 this.emit("onError", e, this.stopped);
                 if (this.stopped) {
-                    this.log.info(`Hub event stream processing stopped: ${e.message}`);
+                    this.log.log(`Hub event stream processing stopped: ${e.message}`);
                 } else {
-                    this.log.info(`Hub event stream processing halted unexpectedly: ${e.message}`);
-                    this.log.info(`HubSubscriber ${this.label} restarting hub event stream in 5 seconds...`);
+                    this.log.log(`Hub event stream processing halted unexpectedly: ${e.message}`);
+                    this.log.log(`HubSubscriber ${this.label} restarting hub event stream in 5 seconds...`);
                     await sleep(5_000);
                     void this.start();
                 }

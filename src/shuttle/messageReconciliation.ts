@@ -1,6 +1,7 @@
 import { type HubRpcClient, type Message, MessageType } from "@farcaster/hub-nodejs";
 import type { DB, MessageRow } from "./db";
 import type { pino } from "pino";
+import type { Logger } from "@nestjs/common";
 
 const MAX_PAGE_SIZE = 3_000;
 
@@ -10,9 +11,9 @@ type MessageWithSoftDelete = Message & { missingInDb?: boolean, wasPruned?: bool
 export class MessageReconciliation {
     private client: HubRpcClient;
     private db: DB;
-    private log: pino.Logger;
+    private log: Logger;
 
-    constructor(client: HubRpcClient, db: DB, log: pino.Logger) {
+    constructor(client: HubRpcClient, db: DB, log: Logger) {
         this.client = client;
         this.db = db;
         this.log = log;
@@ -33,7 +34,7 @@ export class MessageReconciliation {
             await this.reconcileMessagesOfTypeForFid(fid, type, onHubMessages);
         }
 
-        this.log.info(`Reconciliation for FID ${fid} complete`);
+        this.log.log(`Reconciliation for FID ${fid} complete`);
     }
 
     async reconcileMessagesOfTypeForFid(

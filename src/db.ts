@@ -1,5 +1,5 @@
 import { type ColumnType, FileMigrationProvider, type Generated, type GeneratedAlways, type Kysely, MigrationInfo, Migrator } from "kysely";
-import type { Logger } from "./log";
+import type { Logger } from "@nestjs/common";
 import { err, ok, type Result } from "neverthrow";
 import path from "node:path";
 import { promises as fs } from "node:fs";
@@ -29,7 +29,7 @@ export const migrateToLatest = async (db: Kysely<HubTables>, log: Logger): Promi
     // biome-ignore lint/complexity/noForEach: <explanation>
     results?.forEach((it) => {
         if (it.status === "Success") {
-            log.info(`Migration "${it.migrationName}" was executed successfully`);
+            log.log(`Migration "${it.migrationName}" was executed successfully`);
         } else if (it.status === "Error") {
             log.error(`failed to execute migration "${it.migrationName}"`);
         }
@@ -41,7 +41,7 @@ export const migrateToLatest = async (db: Kysely<HubTables>, log: Logger): Promi
         return err(error);
     }
 
-    log.info("Migrations up to date");
+    log.log("Migrations up to date");
     return ok(undefined);
 };
 
