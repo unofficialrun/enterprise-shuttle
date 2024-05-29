@@ -1,11 +1,9 @@
 import {
     type Cluster,
-    ClusterOptions,
     type Redis,
-    RedisOptions,
     ReplyError,
 } from "ioredis";
-import { getHubEventCacheKey, type HubClient } from "./hub";
+import type { HubClient } from "./hub";
 import { inBatchesOf, sleep } from "../utils";
 import { statsd } from "../statsd";
 import { extractEventTimestamp, HubEvent } from "@farcaster/hub-nodejs";
@@ -122,9 +120,8 @@ export class EventStreamConnection {
                 id: idBytes.toString(),
                 data,
             }));
-        } else {
-            return [];
         }
+            return [];
     }
 
     /**

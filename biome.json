@@ -8,7 +8,9 @@
         "rules": {
             "recommended": true,
             "complexity": {
-                "useLiteralKeys": "off"
+                "useLiteralKeys": "off",
+                "noStaticOnlyClass": "off",
+                "noThisInStatic": "off"
             }
         }
     }

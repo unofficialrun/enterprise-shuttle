@@ -1,8 +1,8 @@
 import {
     getInsecureHubRpcClient,
     getSSLHubRpcClient,
-    HubEvent,
-    HubRpcClient,
+    type HubEvent,
+    type HubRpcClient,
     isMergeOnChainHubEvent,
     isMergeUsernameProofHubEvent,
     isPruneMessageHubEvent,
@@ -26,13 +26,13 @@ export const getHubEventCacheKey = (event: HubEvent): string => {
         const hash = bytesToHex(event.mergeMessageBody.message.hash);
         const deletedHashes = event.mergeMessageBody.deletedMessages.map((message) => bytesToHex(message.hash));
         return `hub:evt:merge:${[hash, ...deletedHashes].join(":")}`;
-    } else if (isRevokeMessageHubEvent(event)) {
+    }if (isRevokeMessageHubEvent(event)) {
         const hash = bytesToHex(event.revokeMessageBody.message.hash);
         return `hub:evt:revoke:${hash}`;
-    } else if (isPruneMessageHubEvent(event)) {
+    }if (isPruneMessageHubEvent(event)) {
         const hash = bytesToHex(event.pruneMessageBody.message.hash);
         return `hub:evt:prune:${hash}`;
-    } else if (isMergeUsernameProofHubEvent(event)) {
+    }if (isMergeUsernameProofHubEvent(event)) {
         if (event.mergeUsernameProofBody.deletedUsernameProof) {
             if (event.mergeUsernameProofBody.deletedUsernameProofMessage) {
                 const hash = bytesToHex(event.mergeUsernameProofBody.deletedUsernameProofMessage.hash);

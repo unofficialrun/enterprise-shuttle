@@ -1,5 +1,5 @@
 import {
-    HubEvent,
+    type HubEvent,
     isCastAddMessage,
     isCastRemoveMessage,
     isLinkAddMessage,
@@ -11,12 +11,12 @@ import {
     isRevokeMessageHubEvent,
     isVerificationAddAddressMessage,
     isVerificationRemoveMessage,
-    Message,
-    MessageType,
+    type Message,
+    type MessageType,
 } from "@farcaster/hub-nodejs";
-import { DB } from "./db";
+import type { DB } from "./db";
 import { MessageProcessor } from "./messageProcessor";
-import { MessageHandler, MessageState, StoreMessageOperation } from "./";
+import type { MessageHandler, MessageState, StoreMessageOperation } from "./";
 import { log } from "../log";
 
 export class HubEventProcessor {
@@ -92,25 +92,25 @@ export class HubEventProcessor {
         // Casts
         if (isAdd && isCastAddMessage(message)) {
             return "created";
-        } else if ((isAdd && isCastRemoveMessage(message)) || (!isAdd && isCastAddMessage(message))) {
+        }if ((isAdd && isCastRemoveMessage(message)) || (!isAdd && isCastAddMessage(message))) {
             return "deleted";
         }
         // Links
         if (isAdd && isLinkAddMessage(message)) {
             return "created";
-        } else if ((isAdd && isLinkRemoveMessage(message)) || (!isAdd && isLinkAddMessage(message))) {
+        }if ((isAdd && isLinkRemoveMessage(message)) || (!isAdd && isLinkAddMessage(message))) {
             return "deleted";
         }
         // Reactions
         if (isAdd && isReactionAddMessage(message)) {
             return "created";
-        } else if ((isAdd && isReactionRemoveMessage(message)) || (!isAdd && isReactionAddMessage(message))) {
+        }if ((isAdd && isReactionRemoveMessage(message)) || (!isAdd && isReactionAddMessage(message))) {
             return "deleted";
         }
         // Verifications
         if (isAdd && isVerificationAddAddressMessage(message)) {
             return "created";
-        } else if (
+        }if (
             (isAdd && isVerificationRemoveMessage(message)) ||
             (!isAdd && isVerificationAddAddressMessage(message))
         ) {
