@@ -37,39 +37,59 @@ import { insertLinks, deleteLinks } from './processors/link';
 import { insertReactions, deleteReactions } from './processors/reaction';
 import { insertUserDatas } from './processors/user-data';
 import { insertVerifications, deleteVerifications } from './processors/verification';
+import { Command, CommandRunner } from 'nest-commander';
 
-@Injectable()
-export class AppService {
-  private readonly logger = new Logger(AppService.name);
-  constructor(
-    @InjectKysely() private readonly db: DB,
-  ) { }
+@Command({ name: 'shuttle', arguments: '<task>', description: 'Manage the shuttle tasks' })
+export class AppShuttleCommand extends CommandRunner {
+  private readonly logger = new Logger(AppShuttleCommand.name);
+  
+  constructor(@InjectKysely() private readonly db: DB) {
+    super();
+  }
 
-  async start() {
-    log.info(`Creating app connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
-    const app = App.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
-    log.info("Starting shuttle");
+  async run(passedParam: string[]) {
+    const task = passedParam[0];
+
+    switch(task) {
+      case 'start':
+        await this.start();
+        break;
+      case 'backfill':
+        await this.backfill();
+        break;
+      case 'worker':
+        await this.worker();
+        break;
+      default:
+        this.logger.error(`Unknown task: ${task}`);
+    }
+  }
+
+  private async start() {
+    this.logger.log(`Creating app connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
+    const app = AppHandler.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
+    this.logger.log("Starting shuttle");
     await app.start();
   }
 
-  async backfill() {
+  private async backfill() {
+    this.logger.log("Starting backfill task");
     this.logger.debug(`Creating app connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
-    const app = App.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
+    const app = AppHandler.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
     this.logger.debug("Starting shuttle");
     const fids = BACKFILL_FIDS ? BACKFILL_FIDS.split(",").map((fid) => Number.parseInt(fid)) : [];
-    log.info(`Backfilling fids: ${fids}`);
+    this.logger.log(`Backfilling fids: ${fids}`);
     const backfillQueue = getQueue(app.redis.client);
     await app.backfillFids(fids, backfillQueue);
 
     // Start the worker after initiating a backfill
     const worker = getWorker(app, app.redis.client, log, CONCURRENCY);
     await worker.run();
-    return;
   }
 
-  async worker() {
-    log.info(`Starting worker connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
-    const app = App.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
+  private async worker() {
+    this.logger.log(`Starting worker connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
+    const app = AppHandler.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
     const worker = getWorker(app, app.redis.client, log, CONCURRENCY);
     await worker.run();
   }
@@ -77,8 +97,8 @@ export class AppService {
 
 const hubId = "shuttle";
 
-export class App implements MessageHandler {
-  private readonly logger = new Logger(AppService.name);
+export class AppHandler implements MessageHandler {
+  private readonly logger = new Logger(AppHandler.name);
   private readonly db: DB;
   private hubSubscriber: HubSubscriber;
   private streamConsumer: HubEventStreamConsumer;
@@ -120,7 +140,7 @@ export class App implements MessageHandler {
     );
     const streamConsumer = new HubEventStreamConsumer(hub, eventStreamForRead, shardKey);
 
-    return new App(db, redis, hubSubscriber, streamConsumer);
+    return new AppHandler(db, redis, hubSubscriber, streamConsumer);
   }
 
   static async processMessagesOfType(messages: Message[], type: MessageType, db: AppDb): Promise<void> {
@@ -158,7 +178,7 @@ export class App implements MessageHandler {
     const appDB = txn as unknown as AppDb;
 
     if (messages.length > 0)
-      await App.processMessagesOfType(messages, type, appDB);
+      await AppHandler.processMessagesOfType(messages, type, appDB);
   }
 
   async handleMessageMerge(
@@ -181,7 +201,7 @@ export class App implements MessageHandler {
     // castAdd, operation=delete, state=deleted (the cast that the remove is removing)
     // castRemove, operation=merge, state=deleted (the actual remove message)
     if (message.data?.type)
-      await App.processMessagesOfType([message], message.data?.type, appDB)
+      await AppHandler.processMessagesOfType([message], message.data?.type, appDB)
 
     const messageDesc = wasMissed ? `missed message (${operation})` : `message (${operation})`;
     this.logger.debug(`${state} ${messageDesc} ${bytesToHexString(message.hash)._unsafeUnwrap()} (type ${message.data?.type})`);

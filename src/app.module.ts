@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppShuttleCommand } from './app.command';
 import { KyselyModule } from 'nestjs-kysely';
 import { CamelCasePlugin, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
@@ -21,7 +20,7 @@ import Cursor from 'pg-cursor';
       plugins: [new CamelCasePlugin()],
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [AppShuttleCommand],
+  exports: [AppShuttleCommand]
 })
 export class AppModule {}
