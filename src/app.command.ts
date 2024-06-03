@@ -41,7 +41,7 @@ import { Command, CommandRunner } from 'nest-commander';
 @Command({ name: 'shuttle', arguments: '<task>', description: 'Manage the shuttle tasks' })
 export class AppShuttleCommand extends CommandRunner {
   private readonly logger = new Logger(AppShuttleCommand.name);
-  
+
   constructor(@InjectKysely() private readonly db: DB) {
     super();
   }
@@ -49,7 +49,7 @@ export class AppShuttleCommand extends CommandRunner {
   async run(passedParam: string[]) {
     const task = passedParam[0];
 
-    switch(task) {
+    switch (task) {
       case 'start':
         await this.start();
         break;
