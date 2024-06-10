@@ -59,6 +59,9 @@ export class AppShuttleCommand extends CommandRunner {
       case 'worker':
         await this.worker();
         break;
+      case 'health':
+        this.logger.log("Health check passed");
+        break;
       default:
         this.logger.error(`Unknown task: ${task}`);
     }
