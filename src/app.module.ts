@@ -5,9 +5,11 @@ import { KyselyModule } from 'nestjs-kysely';
 import { CamelCasePlugin, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import Cursor from 'pg-cursor';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
+    HealthModule,
     ConfigModule.forRoot(),
     KyselyModule.forRoot({
       dialect: new PostgresDialect({
@@ -23,4 +25,4 @@ import Cursor from 'pg-cursor';
   providers: [AppShuttleCommand],
   exports: [AppShuttleCommand]
 })
-export class AppModule {}
+export class AppModule { }
