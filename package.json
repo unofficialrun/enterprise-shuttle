@@ -23,7 +23,7 @@
     "@commander-js/extra-typings": "^12.1.0",
     "@farcaster/hot-shots": "^10.0.0",
     "@farcaster/hub-nodejs": "^0.11.12",
-    "@farcaster/shuttle": "^0.2.8",
+    "@farcaster/shuttle": "^0.3.0",
     "@figma/hot-shots": "^9.0.0-figma.1",
     "@google-cloud/cloud-sql-connector": "^1.3.0",
     "@nestjs/common": "^10.0.0",

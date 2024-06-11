@@ -228,14 +228,25 @@ export class AppHandler implements MessageHandler {
   }
 
   async reconcileFids(fids: number[]) {
-    // log.info(`Reconciling messages for FIDs: ${fids}`)
     // biome-ignore lint/style/noNonNullAssertion: client is always initialized
     const reconciler = new MessageReconciliation(this.hubSubscriber.hubClient!, this.db, this.logger);
     for (const fid of fids) {
-      await reconciler.reconcileMessagesForFid(fid, async (messages, type) => {
-        const missingInDb = messages.filter((msg) => msg.missingInDb);
-        await HubEventProcessor.handleMissingMessagesOfType(this.db, missingInDb, type, this);
-      });
+      await reconciler.reconcileMessagesForFid(
+        fid,
+        async (message, missingInDb, prunedInDb, revokedInDb) => {
+          if (missingInDb) {
+            await HubEventProcessor.handleMissingMessage(this.db, message, this);
+          } else if (prunedInDb || revokedInDb) {
+            const messageDesc = prunedInDb ? "pruned" : revokedInDb ? "revoked" : "existing";
+            this.logger.log(`Reconciled ${messageDesc} message ${bytesToHexString(message.hash)._unsafeUnwrap()}`);
+          }
+        },
+        async (message, missingInHub) => {
+          if (missingInHub) {
+            this.logger.log(`Message ${bytesToHexString(message.hash)._unsafeUnwrap()} is missing in the hub`);
+          }
+        },
+      );
     }
   }
 

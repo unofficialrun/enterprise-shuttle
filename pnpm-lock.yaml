@@ -15,8 +15,8 @@ dependencies:
     specifier: ^0.11.12
     version: 0.11.12(typescript@5.4.5)
   '@farcaster/shuttle':
-    specifier: ^0.2.8
-    version: 0.2.8(typescript@5.4.5)
+    specifier: ^0.3.0
+    version: 0.3.0(typescript@5.4.5)
   '@figma/hot-shots':
     specifier: ^9.0.0-figma.1
     version: 9.0.0-figma.1
@@ -698,6 +698,21 @@ packages:
       - zod
     dev: false
 
+  /@farcaster/core@0.14.13(typescript@5.4.5):
+    resolution: {integrity: sha512-rsXfHvXznyj3eNMlJj8ObOtSh05/UD3bLrso6wh7somH5iONVqqk+a8QIaswaxAD0Unc0NhBXK03BI7qDg2Qug==}
+    dependencies:
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
+      bs58: 5.0.0
+      neverthrow: 6.2.1
+      viem: 1.21.4(typescript@5.4.5)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+    dev: false
+
   /@farcaster/hot-shots@10.0.0:
     resolution: {integrity: sha512-wVbdYvZL41SuCOFOUPsso16Ld/CZtjhVE0dJr8xgR2AygniI7YR9a9lmtIZS94/LUxL84JLCAkUJzTIpPKCagQ==}
     engines: {node: '>=10.0.0'}
@@ -717,11 +732,25 @@ packages:
       - zod
     dev: false
 
-  /@farcaster/shuttle@0.2.8(typescript@5.4.5):
-    resolution: {integrity: sha512-FwHp7NG0F9z6nDX+VJvJDhACaDWV2IP2X2eT44km0iJDCFZlGo9eXus125x38JrrGVloJRcZ9D2uOdQ8KCRYNg==}
+  /@farcaster/hub-nodejs@0.11.14(typescript@5.4.5):
+    resolution: {integrity: sha512-Jx6lq8w95ljNKPXFPiyrRt7aWSLwgMV5lU666JaXAEvrKT1VAuu6Vq/ZII6SgNl0AXr97ApW+mNgCWSJnaJWYQ==}
+    dependencies:
+      '@farcaster/core': 0.14.13(typescript@5.4.5)
+      '@grpc/grpc-js': 1.8.21
+      '@noble/hashes': 1.4.0
+      neverthrow: 6.2.1
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+    dev: false
+
+  /@farcaster/shuttle@0.3.0(typescript@5.4.5):
+    resolution: {integrity: sha512-z5ohUshorv5w40uuZt+EBZwkjWpjR3l+L0uqEpSar2sVrFHsaEar+BuedY2CuX5Zb8wHhaDjnQ/eu+PBxIwwsw==}
     dependencies:
       '@farcaster/hot-shots': 10.0.0
-      '@farcaster/hub-nodejs': 0.11.12(typescript@5.4.5)
+      '@farcaster/hub-nodejs': 0.11.14(typescript@5.4.5)
       commander: 11.1.0
       ioredis: 5.4.1
       neverthrow: 6.2.1
@@ -810,6 +839,7 @@ packages:
   /@humanwhocodes/config-array@0.11.14:
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
     engines: {node: '>=10.10.0'}
+    deprecated: Use @eslint/config-array instead
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
       debug: 4.3.4
@@ -825,6 +855,7 @@ packages:
 
   /@humanwhocodes/object-schema@2.0.3:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
+    deprecated: Use @eslint/object-schema instead
     dev: true
 
   /@ioredis/commands@1.2.0:
