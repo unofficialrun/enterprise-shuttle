@@ -14,7 +14,7 @@ import { HealthModule } from './health/health.module';
     KyselyModule.forRoot({
       dialect: new PostgresDialect({
         pool: new Pool({
-          max: 20,
+          max: 10,
           connectionString: process.env.POSTGRES_URL,
         }),
         cursor: Cursor,
