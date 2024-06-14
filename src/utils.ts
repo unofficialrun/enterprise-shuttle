@@ -1,7 +1,7 @@
 import type { DeleteQueryBuilder, InsertQueryBuilder, SelectQueryBuilder, UpdateQueryBuilder } from "kysely";
 import { format as formatSql } from "sql-formatter";
 import { bytesToBase58, fromFarcasterTime, type Message, MessageType, Protocol } from "@farcaster/hub-nodejs";
-import type { MessageBodyJson, VerificationProtocol } from "@farcaster/shuttle";
+import type { MessageBodyJson, VerificationProtocol } from "./shuttle/db";
 
 export function extendStackTrace(
   err: unknown,
@@ -111,6 +111,7 @@ export function convertProtobufMessageBodyToJson(message: Message): MessageBodyJ
         text,
         parentCastId,
         parentUrl,
+        type,
       } = message.data.castAddBody;
 
       const embeds: string[] = [];
@@ -135,6 +136,7 @@ export function convertProtobufMessageBodyToJson(message: Message): MessageBodyJ
         mentions,
         mentionsPositions,
         text,
+        type,
         parent: parentCastId ? { fid: parentCastId.fid, hash: bytesToHex(parentCastId.hash) } : parentUrl,
       };
       break;

@@ -12,8 +12,8 @@ dependencies:
     specifier: ^10.0.0
     version: 10.0.0
   '@farcaster/hub-nodejs':
-    specifier: ^0.11.12
-    version: 0.11.12(typescript@5.4.5)
+    specifier: ^0.11.16
+    version: 0.11.16(typescript@5.4.5)
   '@farcaster/shuttle':
     specifier: ^0.3.0
     version: 0.3.0(typescript@5.4.5)
@@ -683,23 +683,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@farcaster/core@0.14.12(typescript@5.4.5):
-    resolution: {integrity: sha512-BnjraGxEmEAFt0kLULGdO/K6K1F/33UvoCKbd1A7f04JDgtorXAYDbKU4f6oa3FtOgqNHolWvADWRp5ZNG0Dew==}
-    dependencies:
-      '@noble/curves': 1.4.0
-      '@noble/hashes': 1.4.0
-      bs58: 5.0.0
-      neverthrow: 6.2.1
-      viem: 1.21.4(typescript@5.4.5)
-    transitivePeerDependencies:
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /@farcaster/core@0.14.13(typescript@5.4.5):
-    resolution: {integrity: sha512-rsXfHvXznyj3eNMlJj8ObOtSh05/UD3bLrso6wh7somH5iONVqqk+a8QIaswaxAD0Unc0NhBXK03BI7qDg2Qug==}
+  /@farcaster/core@0.14.15(typescript@5.4.5):
+    resolution: {integrity: sha512-qEPaumn5+UMZ7r4VZRt12RgCV98gy/SXP1WZ80DyCvUsbJamgQUfRZH69Z5SKJyuN4SAJo6gknZ4ws5+XLyzWA==}
     dependencies:
       '@noble/curves': 1.4.0
       '@noble/hashes': 1.4.0
@@ -718,24 +703,10 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: false
 
-  /@farcaster/hub-nodejs@0.11.12(typescript@5.4.5):
-    resolution: {integrity: sha512-k0HvHQF7978HDMf0venYFM1e+zUwj/G04wIEYnGKWLq6hNdLeR0t+vthxhkz5VhQDt6BC9oBlb2EKViCQ/mumQ==}
+  /@farcaster/hub-nodejs@0.11.16(typescript@5.4.5):
+    resolution: {integrity: sha512-u7VHi3CvCK/R6bkZ3MkU3juhIXmrYQAGTZ2QLSgDZsOihUnqtvyn9cSV01LFV/1Q3ax4h3B6+54aVCblZW+68Q==}
     dependencies:
-      '@farcaster/core': 0.14.12(typescript@5.4.5)
-      '@grpc/grpc-js': 1.8.21
-      '@noble/hashes': 1.4.0
-      neverthrow: 6.2.1
-    transitivePeerDependencies:
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /@farcaster/hub-nodejs@0.11.14(typescript@5.4.5):
-    resolution: {integrity: sha512-Jx6lq8w95ljNKPXFPiyrRt7aWSLwgMV5lU666JaXAEvrKT1VAuu6Vq/ZII6SgNl0AXr97ApW+mNgCWSJnaJWYQ==}
-    dependencies:
-      '@farcaster/core': 0.14.13(typescript@5.4.5)
+      '@farcaster/core': 0.14.15(typescript@5.4.5)
       '@grpc/grpc-js': 1.8.21
       '@noble/hashes': 1.4.0
       neverthrow: 6.2.1
@@ -750,7 +721,7 @@ packages:
     resolution: {integrity: sha512-z5ohUshorv5w40uuZt+EBZwkjWpjR3l+L0uqEpSar2sVrFHsaEar+BuedY2CuX5Zb8wHhaDjnQ/eu+PBxIwwsw==}
     dependencies:
       '@farcaster/hot-shots': 10.0.0
-      '@farcaster/hub-nodejs': 0.11.14(typescript@5.4.5)
+      '@farcaster/hub-nodejs': 0.11.16(typescript@5.4.5)
       commander: 11.1.0
       ioredis: 5.4.1
       neverthrow: 6.2.1
