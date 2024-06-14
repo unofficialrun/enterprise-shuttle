@@ -63,7 +63,7 @@ dependencies:
     specifier: ^6.2.1
     version: 6.2.1
   pg:
-    specifier: ^8.11.3
+    specifier: ^8.11.5
     version: 8.11.5
   pg-cursor:
     specifier: ^2.10.3
