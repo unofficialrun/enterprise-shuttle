@@ -94,6 +94,8 @@ export const up = async (db: Kysely<any>) => {
         )
         .execute();
 
+    // Create hash index on messages table
+    await db.schema.createIndex("messages_hash_index").on("messages").columns(["hash"]).execute();
     await db.schema.createIndex("messages_timestamp_index").on("messages").columns(["timestamp"]).execute();
     await db.schema.createIndex("messages_fid_index").on("messages").columns(["fid"]).execute();
     await db.schema.createIndex("messages_signer_index").on("messages").columns(["signer"]).execute();
