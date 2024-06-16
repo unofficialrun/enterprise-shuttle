@@ -109,6 +109,18 @@ export const up = async (db: Kysely<any>) => {
         .where('rootParentUrl', 'is not', null)
         .execute()
 
+    await db.schema
+        .createIndex('casts_fid_timestamp')
+        .on('casts')
+        .columns(['fid', 'timestamp'])
+        .execute();
+    
+    await db.schema
+        .createIndex('casts_fid_hash_timestamp')
+        .on('casts')
+        .columns(['fid', 'hash', 'timestamp'])
+        .execute();
+
     // REACTIONS
     await db.schema
         .createTable('reactions')
