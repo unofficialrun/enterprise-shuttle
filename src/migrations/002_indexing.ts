@@ -65,6 +65,7 @@ export const up = async (db: Kysely<any>) => {
         .addColumn('mentionsPositions', 'json', (col) =>
             col.notNull().defaultTo(sql`'[]'`)
         )
+        .addColumn('type', 'int2', (col) => col.notNull())
         .execute()
 
     await db.schema

@@ -19,6 +19,7 @@ export function formatCasts(msgs: Message[]) {
       embeds: JSON.stringify(castAddBody.embeds),
       mentions: JSON.stringify(castAddBody.mentions),
       mentionsPositions: JSON.stringify(castAddBody.mentionsPositions),
+      type: castAddBody.type,
     } satisfies Insertable<Tables['casts']>
   })
 }

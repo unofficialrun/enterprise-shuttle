@@ -95,8 +95,9 @@ export const up = async (db: Kysely<any>) => {
         .execute();
 
     await db.schema.createIndex("messages_timestamp_index").on("messages").columns(["timestamp"]).execute();
-
     await db.schema.createIndex("messages_fid_index").on("messages").columns(["fid"]).execute();
-
     await db.schema.createIndex("messages_signer_index").on("messages").columns(["signer"]).execute();
+    await db.schema.createIndex("messages_fid_type_index").on("messages").columns(["fid", "type"]).execute();
+    await db.schema.createIndex("messages_fid_timestamp_index").on("messages").columns(["fid", "timestamp"]).execute();
+    await db.schema.createIndex("messages_signer_fid_index").on("messages").columns(["signer", "fid"]).execute();
 };

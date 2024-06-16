@@ -5,7 +5,7 @@ import path from "node:path";
 import { promises as fs } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { HubTables, Fid, Hex } from "@farcaster/shuttle";
-import type { UserNameType, ReactionType, UserDataType } from "@farcaster/hub-nodejs";
+import type { UserNameType, ReactionType, UserDataType, CastType } from "@farcaster/hub-nodejs";
 
 const createMigrator = async (db: Kysely<HubTables>, log: Logger) => {
     const currentDir = path.dirname(__filename); // CommonJS equivalent
@@ -98,6 +98,7 @@ type CastRow = {
     embeds: ColumnType<CastEmbedJson[], string, string>;
     mentions: ColumnType<Fid[], string, string>;
     mentionsPositions: ColumnType<number[], string, string>;
+    type: CastType;
 };
 
 // REACTIONS ---------------------------------------------------------------------------------------
