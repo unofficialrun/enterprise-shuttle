@@ -173,6 +173,13 @@ export const up = async (db: Kysely<any>) => {
         .addColumn('hash', 'bytea', (col) => col.notNull().unique())
         .execute()
 
+    // Create index for links by hash  
+    await db.schema
+        .createIndex('links_hash_index')
+        .on('links')
+        .column('hash')
+        .execute()
+
     // Create index for links by target fid
     await db.schema
         .createIndex('links_target_fid_index')
