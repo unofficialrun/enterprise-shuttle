@@ -159,7 +159,7 @@ export class BaseHubSubscriber extends HubSubscriber {
                 if (this.stopped) {
                     this.log.log(`Hub event stream processing stopped: ${e.message}`);
                 } else {
-                    this.log.log(`Hub event stream processing halted unexpectedly: ${e.message}`);
+                    this.log.error(`Hub event stream processing halted unexpectedly: ${e.message}`);
                     this.log.log(`HubSubscriber ${this.label} restarting hub event stream in 5 seconds...`);
                     await sleep(5_000);
                     void this.start();
