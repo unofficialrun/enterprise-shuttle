@@ -206,8 +206,8 @@ export class AppHandler implements MessageHandler {
     if (message.data?.type)
       await AppHandler.processMessagesOfType([message], message.data?.type, appDB)
 
-    const messageDesc = wasMissed ? `missed message (${operation})` : `message (${operation})`;
-    this.logger.debug(`${state} ${messageDesc} ${bytesToHexString(message.hash)._unsafeUnwrap()} (type ${message.data?.type})`);
+    // const messageDesc = wasMissed ? `missed message (${operation})` : `message (${operation})`;
+    // this.logger.debug(`${state} ${messageDesc} ${bytesToHexString(message.hash)._unsafeUnwrap()} (type ${message.data?.type})`);
   }
 
   async start() {

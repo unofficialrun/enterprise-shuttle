@@ -56,7 +56,7 @@ export class MessageReconciliation {
       const messageHashes = messages.map((msg) => msg.hash);
 
       if (messageHashes.length === 0) {
-        this.log.debug(`No messages of type ${type} for FID ${fid}`);
+        // this.log.debug(`No messages of type ${type} for FID ${fid}`);
         continue;
       }
 
