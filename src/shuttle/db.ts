@@ -151,7 +151,11 @@ export const getDbClient = (connectionString?: string) => {
                 max: 10,
                 connectionString,
                 // long query timeouts required for many workers
-                query_timeout: 1_000_000,
+                query_timeout: 1_000_000, // 1000 seconds in milliseconds
+                idle_in_transaction_session_timeout: 300_000, // 5 minutes in milliseconds
+                statement_timeout: 60_000, // 1 minute in milliseconds for each statement
+                idleTimeoutMillis: 30_000, // 30 seconds for idle client
+                connectionTimeoutMillis: 10_000, // 10 seconds for connection timeout
             }),
             cursor: Cursor,
         }),
