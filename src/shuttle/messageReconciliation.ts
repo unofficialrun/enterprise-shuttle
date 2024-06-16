@@ -1,6 +1,5 @@
 import { type HubRpcClient, type Message, MessageType } from "@farcaster/hub-nodejs";
 import type { DB, MessageRow } from "./db";
-import type { pino } from "pino";
 import type { Logger } from "@nestjs/common";
 const MAX_PAGE_SIZE = 3_000;
 

@@ -15,7 +15,7 @@ import { HealthModule } from './health/health.module';
       dialect: new PostgresDialect({
         pool: new Pool({
           max: 10,
-          connectionString: process.env.POSTGRES_URL,
+          connectionString: process.env.DATABASE_URL,
         }),
         cursor: Cursor,
       }),

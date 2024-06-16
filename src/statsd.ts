@@ -1,4 +1,4 @@
-import dns, { LookupOptions } from "node:dns";
+import dns, { type LookupOptions } from "node:dns";
 import { isIP } from "node:net";
 
 import StatsD from "@farcaster/hot-shots";
