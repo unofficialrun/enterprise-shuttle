@@ -15,8 +15,8 @@ dependencies:
     specifier: ^0.11.16
     version: 0.11.16(typescript@5.4.5)
   '@farcaster/shuttle':
-    specifier: ^0.3.0
-    version: 0.3.0(typescript@5.4.5)
+    specifier: ^0.3.3
+    version: 0.3.3(typescript@5.4.5)
   '@figma/hot-shots':
     specifier: ^9.0.0-figma.1
     version: 9.0.0-figma.1
@@ -47,6 +47,9 @@ dependencies:
   dotenv:
     specifier: ^16.4.5
     version: 16.4.5
+  hub-nodejs:latest:
+    specifier: link:@farcaster/hub-nodejs:latest
+    version: link:@farcaster/hub-nodejs:latest
   ioredis:
     specifier: ^5.3.2
     version: 5.4.1
@@ -717,13 +720,14 @@ packages:
       - zod
     dev: false
 
-  /@farcaster/shuttle@0.3.0(typescript@5.4.5):
-    resolution: {integrity: sha512-z5ohUshorv5w40uuZt+EBZwkjWpjR3l+L0uqEpSar2sVrFHsaEar+BuedY2CuX5Zb8wHhaDjnQ/eu+PBxIwwsw==}
+  /@farcaster/shuttle@0.3.3(typescript@5.4.5):
+    resolution: {integrity: sha512-1D0A3CKx/PTAqrsUN0SWvyt8sT+rcSHSGal+i7oDm70B9hWEdy40qPSBuTeox1uc6Us/rnNTo9BgQdJfINPKpA==}
     dependencies:
       '@farcaster/hot-shots': 10.0.0
       '@farcaster/hub-nodejs': 0.11.16(typescript@5.4.5)
       commander: 11.1.0
       ioredis: 5.4.1
+      kysely: 0.26.3
       neverthrow: 6.2.1
       pg: 8.11.5
       pg-cursor: 2.10.5(pg@8.11.5)
@@ -4413,6 +4417,11 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
     dev: true
+
+  /kysely@0.26.3:
+    resolution: {integrity: sha512-yWSgGi9bY13b/W06DD2OCDDHQmq1kwTGYlQ4wpZkMOJqMGCstVCFIvxCCVG4KfY1/3G0MhDAcZsip/Lw8/vJWw==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /kysely@0.27.3:
     resolution: {integrity: sha512-lG03Ru+XyOJFsjH3OMY6R/9U38IjDPfnOfDgO3ynhbDr+Dz8fak+X6L62vqu3iybQnj+lG84OttBuU9KY3L9kA==}
