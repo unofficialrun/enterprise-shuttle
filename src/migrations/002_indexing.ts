@@ -164,6 +164,12 @@ export const up = async (db: Kysely<any>) => {
         .where('targetUrl', 'is not', null)
         .execute()
 
+    await db.schema
+        .createIndex('reactions_fid_type_target_cast_hash_index')
+        .on('reactions')
+        .columns(['fid', 'type', 'targetCastHash'])
+        .execute()
+
     // LINKS
     await db.schema
         .createTable('links')
