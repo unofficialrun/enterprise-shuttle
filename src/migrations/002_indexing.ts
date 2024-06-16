@@ -173,6 +173,42 @@ export const up = async (db: Kysely<any>) => {
         .addColumn('hash', 'bytea', (col) => col.notNull().unique())
         .execute()
 
+    // Create index for links by target fid
+    await db.schema
+        .createIndex('links_target_fid_index')
+        .on('links')
+        .column('targetFid')
+        .execute()
+
+    // Create index for links by fid
+    await db.schema
+        .createIndex('links_fid_index')
+        .on('links')
+        .column('fid')
+        .execute()
+    
+    // Create index for links by type
+    await db.schema
+        .createIndex('links_type_index')
+        .on('links')
+        .column('type')
+        .execute()
+
+    // Create index for links by fid and target fid
+    await db.schema
+        .createIndex('links_fid_target_fid_index')
+        .on('links')
+        .columns(['fid', 'targetFid'])
+        .execute()
+
+    // Create index for links by fid and timestamp
+    await db.schema
+        .createIndex('links_active_fid_timestamp_index')
+        .on('links')
+        .columns(['fid', 'timestamp'])
+        .where(sql.ref('deleted_at'), 'is', null) // Only index active (non-deleted) links
+        .execute()
+
     // VERIFICATIONS
     await db.schema
         .createTable('verifications')
