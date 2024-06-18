@@ -9,7 +9,7 @@ export class MessageProcessor {
         messages: Message[],
         trx: DB,
         // operation: StoreMessageOperation = "merge",
-        log: Logger | undefined = undefined,
+        log: Logger,
     ) {
         const messageRows = messages.map((message) => {
             const valid = true // validations.validateMessage(m);
@@ -71,8 +71,8 @@ export class MessageProcessor {
     static async storeMessage(
         message: Message,
         trx: DB,
+        log: Logger,
         operation: StoreMessageOperation = "merge",
-        log: Logger | undefined = undefined,
     ): Promise<boolean | null> {
         // const log = createLogger(messageLogData(message));
         // if (ENVIRONMENT === "prod" && message.data?.network !== FC_NETWORK_ID) {
