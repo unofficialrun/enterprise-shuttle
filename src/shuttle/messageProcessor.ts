@@ -1,7 +1,7 @@
 import { Message, validations } from "@farcaster/hub-nodejs";
 import type { DB, InsertableMessageRow } from "./db";
 import { bytesToHex, convertProtobufMessageBodyToJson, farcasterTimeToDate } from "../utils";
-import type { Logger } from "@nestjs/common";
+import type { pino } from "pino";
 import type { StoreMessageOperation } from "./index";
 
 export class MessageProcessor {
@@ -9,7 +9,7 @@ export class MessageProcessor {
         messages: Message[],
         trx: DB,
         // operation: StoreMessageOperation = "merge",
-        log: Logger,
+        log: pino.Logger | undefined = undefined,
     ) {
         const messageRows = messages.map((message) => {
             const valid = true // validations.validateMessage(m);
@@ -64,15 +64,15 @@ export class MessageProcessor {
                 .execute();
         } catch (error) {
             // Handle the error here
-            log.error("Error storing messages:", error);
+            console.error("Error storing messages:", error);
         }
     }
 
     static async storeMessage(
         message: Message,
         trx: DB,
-        log: Logger,
         operation: StoreMessageOperation = "merge",
+        log: pino.Logger | undefined = undefined,
     ): Promise<boolean | null> {
         // const log = createLogger(messageLogData(message));
         // if (ENVIRONMENT === "prod" && message.data?.network !== FC_NETWORK_ID) {
