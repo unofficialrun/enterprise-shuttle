@@ -3,6 +3,7 @@ import {
     isCastAddMessage,
     isCastRemoveMessage,
     isLinkAddMessage,
+    isLinkCompactStateMessage,
     isLinkRemoveMessage,
     isMergeMessageHubEvent,
     isPruneMessageHubEvent,
@@ -12,7 +13,6 @@ import {
     isVerificationAddAddressMessage,
     isVerificationRemoveMessage,
     type Message,
-    type MessageType,
 } from "@farcaster/hub-nodejs";
 import type { DB } from "./db";
 import { MessageProcessor } from "./messageProcessor";
@@ -40,21 +40,6 @@ export class HubEventProcessor {
         await this.processMessage(db, message, handler, "merge", [], true);
     }
 
-    static async handleMissingMessagesOfType(db: DB, messages: Message[], type: MessageType, handler: MessageHandler) {
-        await this.processMessagesOfType(db, messages, type, handler, "merge");
-    }
-
-    private static async processMessagesOfType(
-        db: DB,
-        messages: Message[],
-        type: MessageType,
-        handler: MessageHandler,
-        operation: StoreMessageOperation,
-    ) {
-        await MessageProcessor.storeMessages(messages, db, log);
-        await handler.handleMessagesMergeOfType(messages, type, db);
-    }
-
     private static async processMessage(
         db: DB,
         message: Message,
@@ -65,23 +50,15 @@ export class HubEventProcessor {
     ) {
         await db.transaction().execute(async (trx) => {
             if (deletedMessages.length > 0) {
-                for (const deletedMessage of deletedMessages) {
-                    const isNew = await MessageProcessor.storeMessage(deletedMessage, trx, "delete", log);
-
-                    if (isNew === null)
-                        continue;
-
-                    const state = this.getMessageState(deletedMessage, "delete");
-                    // Log info and handle the message if needed
-                    // log.info(`Handling deleted message ${deletedMessage.data?.fid}`)
-                    await handler.handleMessageMerge(deletedMessage, trx, "delete", state, isNew, wasMissed);
-                }
+                await Promise.all(
+                    deletedMessages.map(async (deletedMessage) => {
+                        const isNew = await MessageProcessor.storeMessage(deletedMessage, trx, "delete", log);
+                        const state = this.getMessageState(deletedMessage, "delete");
+                        await handler.handleMessageMerge(deletedMessage, trx, "delete", state, isNew, wasMissed);
+                    }),
+                );
             }
-        });
-        await db.transaction().execute(async (trx) => {
             const isNew = await MessageProcessor.storeMessage(message, trx, operation, log);
-            if (isNew === null)
-                return;
             const state = this.getMessageState(message, operation);
             await handler.handleMessageMerge(message, trx, operation, state, isNew, wasMissed);
         });
@@ -92,25 +69,25 @@ export class HubEventProcessor {
         // Casts
         if (isAdd && isCastAddMessage(message)) {
             return "created";
-        }if ((isAdd && isCastRemoveMessage(message)) || (!isAdd && isCastAddMessage(message))) {
+        } if ((isAdd && isCastRemoveMessage(message)) || (!isAdd && isCastAddMessage(message))) {
             return "deleted";
         }
         // Links
-        if (isAdd && isLinkAddMessage(message)) {
+        if ((isAdd && isLinkAddMessage(message)) || (isAdd && isLinkCompactStateMessage(message))) {
             return "created";
-        }if ((isAdd && isLinkRemoveMessage(message)) || (!isAdd && isLinkAddMessage(message))) {
+        } if ((isAdd && isLinkRemoveMessage(message)) || (!isAdd && isLinkAddMessage(message))) {
             return "deleted";
         }
         // Reactions
         if (isAdd && isReactionAddMessage(message)) {
             return "created";
-        }if ((isAdd && isReactionRemoveMessage(message)) || (!isAdd && isReactionAddMessage(message))) {
+        } if ((isAdd && isReactionRemoveMessage(message)) || (!isAdd && isReactionAddMessage(message))) {
             return "deleted";
         }
         // Verifications
         if (isAdd && isVerificationAddAddressMessage(message)) {
             return "created";
-        }if (
+        } if (
             (isAdd && isVerificationRemoveMessage(message)) ||
             (!isAdd && isVerificationAddAddressMessage(message))
         ) {
