@@ -1,6 +1,6 @@
 {
   "name": "enterprise-shuttle",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "@christopherwxyz",
   "private": true,
@@ -22,7 +22,7 @@
   "dependencies": {
     "@commander-js/extra-typings": "^12.1.0",
     "@farcaster/hot-shots": "^10.0.0",
-    "@farcaster/hub-nodejs": "^0.11.16",
+    "@farcaster/hub-nodejs": "^0.11.18",
     "@farcaster/shuttle": "^0.3.3",
     "@figma/hot-shots": "^9.0.0-figma.1",
     "@google-cloud/cloud-sql-connector": "^1.3.0",
