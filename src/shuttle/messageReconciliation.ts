@@ -1,6 +1,7 @@
 import { type HubRpcClient, type Message, MessageType } from "@farcaster/hub-nodejs";
 import type { DB, MessageRow } from "./db";
 import type { Logger } from "@nestjs/common";
+
 const MAX_PAGE_SIZE = 3_000;
 
 type DBMessage = {
@@ -173,6 +174,20 @@ export class MessageReconciliation {
 
       if (!pageToken?.length) break;
       result = await this.client.getAllLinkMessagesByFid({ pageSize, pageToken, fid });
+    }
+
+    let deltaResult = await this.client.getLinkCompactStateMessageByFid({ fid, pageSize });
+    for (; ;) {
+      if (deltaResult.isErr()) {
+        throw new Error(`Unable to get all link compact results for FID ${fid}: ${deltaResult.error?.message}`);
+      }
+
+      const { messages, nextPageToken: pageToken } = deltaResult.value;
+
+      yield messages;
+
+      if (!pageToken?.length) break;
+      deltaResult = await this.client.getLinkCompactStateMessageByFid({ pageSize, pageToken, fid });
     }
   }
 
