@@ -12,8 +12,8 @@ dependencies:
     specifier: ^10.0.0
     version: 10.0.0
   '@farcaster/hub-nodejs':
-    specifier: ^0.11.16
-    version: 0.11.16(typescript@5.4.5)
+    specifier: ^0.11.18
+    version: 0.11.18(typescript@5.4.5)
   '@farcaster/shuttle':
     specifier: ^0.3.3
     version: 0.3.3(typescript@5.4.5)
@@ -683,8 +683,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@farcaster/core@0.14.15(typescript@5.4.5):
-    resolution: {integrity: sha512-qEPaumn5+UMZ7r4VZRt12RgCV98gy/SXP1WZ80DyCvUsbJamgQUfRZH69Z5SKJyuN4SAJo6gknZ4ws5+XLyzWA==}
+  /@farcaster/core@0.14.17(typescript@5.4.5):
+    resolution: {integrity: sha512-fO86zL0nTvl+vZPGbeJs+VLYJEX2ZnTD6qjkUWJsn0JBGSQVnKg+mFN5xf5LPkmhP5lNNcHVjoKkVKDd+dgr6A==}
     dependencies:
       '@noble/curves': 1.4.0
       '@noble/hashes': 1.4.0
@@ -703,11 +703,11 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: false
 
-  /@farcaster/hub-nodejs@0.11.16(typescript@5.4.5):
-    resolution: {integrity: sha512-u7VHi3CvCK/R6bkZ3MkU3juhIXmrYQAGTZ2QLSgDZsOihUnqtvyn9cSV01LFV/1Q3ax4h3B6+54aVCblZW+68Q==}
+  /@farcaster/hub-nodejs@0.11.18(typescript@5.4.5):
+    resolution: {integrity: sha512-S3AkPIUZHjtCuVLOgvqxwHFqx3+cdat0cErtIzGXeTRHceOO/SgJ/9Ul1sibQIAYEbiFTPNwToH/YkLJzv5EYw==}
     dependencies:
-      '@farcaster/core': 0.14.15(typescript@5.4.5)
-      '@grpc/grpc-js': 1.8.21
+      '@farcaster/core': 0.14.17(typescript@5.4.5)
+      '@grpc/grpc-js': 1.8.22
       '@noble/hashes': 1.4.0
       neverthrow: 6.2.1
     transitivePeerDependencies:
@@ -721,7 +721,7 @@ packages:
     resolution: {integrity: sha512-1D0A3CKx/PTAqrsUN0SWvyt8sT+rcSHSGal+i7oDm70B9hWEdy40qPSBuTeox1uc6Us/rnNTo9BgQdJfINPKpA==}
     dependencies:
       '@farcaster/hot-shots': 10.0.0
-      '@farcaster/hub-nodejs': 0.11.16(typescript@5.4.5)
+      '@farcaster/hub-nodejs': 0.11.18(typescript@5.4.5)
       commander: 11.1.0
       ioredis: 5.4.1
       kysely: 0.26.3
@@ -789,8 +789,8 @@ packages:
       - supports-color
     dev: false
 
-  /@grpc/grpc-js@1.8.21:
-    resolution: {integrity: sha512-KeyQeZpxeEBSqFVTi3q2K7PiPXmgBfECc4updA1ejCLjYmoAlvvM3ZMp5ztTDUCUQmoY3CpDxvchjO1+rFkoHg==}
+  /@grpc/grpc-js@1.8.22:
+    resolution: {integrity: sha512-oAjDdN7fzbUi+4hZjKG96MR6KTEubAeMpQEb+77qy+3r0Ua5xTFuie6JOLr4ZZgl5g+W5/uRTS2M1V8mVAFPuA==}
     engines: {node: ^8.13.0 || >=10.10.0}
     dependencies:
       '@grpc/proto-loader': 0.7.13
