@@ -104,6 +104,25 @@ export function formatLinks(msgs: Message[]) {
   })
 }
 
+export function formatUsernameProof(msgs: Message[]) {
+  return msgs.map((msg) => {
+    const data = msg.data;
+    const usernameProof = data.usernameProofBody;
+    const timestamp = fromFarcasterTime(data.timestamp)._unsafeUnwrap()
+
+    return {
+      timestamp: new Date(timestamp),
+      fid: usernameProof.fid,
+      hash: msg.hash,
+      name: usernameProof.name,
+      owner: usernameProof.owner,
+      signature: usernameProof.signature,
+      type: usernameProof.type,
+    } satisfies Insertable<Tables['usernameProofs']>
+  })
+}
+
+
 // biome-ignore lint/suspicious/noExplicitAny: TODO: remove any
 export function breakIntoChunks(array: any[], size: number) {
   const chunks = []

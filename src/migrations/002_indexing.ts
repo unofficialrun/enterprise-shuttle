@@ -292,6 +292,32 @@ export const up = async (db: Kysely<any>) => {
         .addUniqueConstraint('user_data_fid_type_unique', ['fid', 'type'])
         .execute()
 
+    // Username Proofs
+    await db.schema
+        .createTable('usernameProofs')
+        .addColumn('id', 'uuid', (col) =>
+            col.defaultTo(sql`generate_ulid()`).primaryKey()
+        )
+        .addColumn('createdAt', 'timestamptz', (col) =>
+            col.notNull().defaultTo(sql`current_timestamp`)
+        )
+        .addColumn('updatedAt', 'timestamptz', (col) =>
+            col.notNull().defaultTo(sql`current_timestamp`)
+        )
+        .addColumn('timestamp', 'timestamptz', (col) => col.notNull())
+        .addColumn('deletedAt', 'timestamptz')
+        .addColumn('fid', 'bigint', (col) => col.notNull())
+        .addColumn('hash', 'bytea', (col) => col.notNull())
+        .addColumn('name', 'text', (col) => col.notNull())
+        .addColumn('owner', 'bytea', (col) => col.notNull())
+        .addColumn('signature', 'bytea', (col) => col.notNull())
+        .addColumn('type', 'int2', (col) => col.notNull())
+        .addUniqueConstraint('username_proofs_fid_username_unique', [
+            'fid',
+            'name',
+        ])
+        .execute()
+
     // Events
     await db.schema
         .createTable('events')
