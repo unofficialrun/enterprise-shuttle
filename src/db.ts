@@ -1,13 +1,12 @@
 import { type ColumnType, FileMigrationProvider, type Generated, type GeneratedAlways, type Kysely, MigrationInfo, Migrator } from "kysely";
-import type { Logger } from "@nestjs/common";
+import { Logger } from "pino";
 import { err, ok, type Result } from "neverthrow";
 import path from "node:path";
 import { promises as fs } from "node:fs";
-import { fileURLToPath } from "node:url";
-import type { HubTables, Fid, Hex } from "@farcaster/shuttle";
+import type { HubTables, Fid, Hex, DB } from "@farcaster/shuttle";
 import type { UserNameType, ReactionType, UserDataType, CastType } from "@farcaster/hub-nodejs";
 
-const createMigrator = async (db: Kysely<HubTables>, log: Logger) => {
+const createMigrator = async (db: Kysely<Tables>, log: Logger) => {
     const currentDir = path.dirname(__filename); // CommonJS equivalent
     const migrator = new Migrator({
         db,
@@ -21,15 +20,16 @@ const createMigrator = async (db: Kysely<HubTables>, log: Logger) => {
     return migrator;
 };
 
-export const migrateToLatest = async (db: Kysely<HubTables>, log: Logger): Promise<Result<void, unknown>> => {
-    const migrator = await createMigrator(db, log);
+export const migrateToLatest = async (db: DB, log: Logger): Promise<Result<void, unknown>> => {
+    const appDb = db as unknown as Kysely<Tables>;
+    const migrator = await createMigrator(appDb, log);
 
     const { error, results } = await migrator.migrateToLatest();
 
     // biome-ignore lint/complexity/noForEach: <explanation>
     results?.forEach((it) => {
         if (it.status === "Success") {
-            log.log(`Migration "${it.migrationName}" was executed successfully`);
+            log.info(`Migration "${it.migrationName}" was executed successfully`);
         } else if (it.status === "Error") {
             log.error(`failed to execute migration "${it.migrationName}"`);
         }
@@ -41,7 +41,7 @@ export const migrateToLatest = async (db: Kysely<HubTables>, log: Logger): Promi
         return err(error);
     }
 
-    log.log("Migrations up to date");
+    log.info("Migrations up to date");
     return ok(undefined);
 };
 

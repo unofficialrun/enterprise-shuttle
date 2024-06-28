@@ -2,11 +2,10 @@ import type { Redis } from "ioredis";
 import { type Job, Queue, Worker } from "bullmq";
 import type { AppHandler } from "./app.command";
 import type { pino } from "pino";
-import type { Logger } from "@nestjs/common";
 
 const QUEUE_NAME = "default";
 
-export function getWorker(app: AppHandler, redis: Redis, logger: Logger, concurrency = 1) {
+export function getWorker(app: AppHandler, redis: Redis, log: pino.Logger, concurrency = 1) {
     const worker = new Worker(
         QUEUE_NAME,
         async (job: Job) => {
@@ -16,12 +15,12 @@ export function getWorker(app: AppHandler, redis: Redis, logger: Logger, concurr
                 await app.reconcileFids(fids);
                 const elapsed = (Date.now() - start) / 1000;
                 const lastFid = fids[fids.length - 1];
-                logger.log(`Reconciled ${fids.length} upto ${lastFid} in ${elapsed}s at ${new Date().toISOString()}`);
+                log.info(`Reconciled ${fids.length} upto ${lastFid} in ${elapsed}s at ${new Date().toISOString()}`);
             } else if (job.name === "completionMarker") {
                 // TODO: Update key in redis so event streaming can start
                 const startedAt = new Date(job.data.startedAt as number);
                 const duration = (Date.now() - startedAt.getTime()) / 1000 / 60;
-                logger.log(
+                log.info(
                     `Reconciliation started at ${startedAt.toISOString()} complete at ${new Date().toISOString()} ${duration} minutes`,
                 );
             }

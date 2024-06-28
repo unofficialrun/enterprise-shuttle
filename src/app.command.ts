@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { log } from './log';
 import {
   type DB,
   getHubClient,
@@ -12,14 +12,14 @@ import {
   HubEventStreamConsumer,
   type HubSubscriber,
   type MessageState,
-} from "./shuttle";
+} from "@farcaster/shuttle";
 import {
   BACKFILL_FIDS,
   CONCURRENCY,
   HUB_HOST,
   HUB_SSL,
   MAX_FID,
-  POSTGRES_URL,
+  DATABASE_URL,
   REDISHOST,
   REDISPORT,
   SHARD_INDEX,
@@ -28,7 +28,7 @@ import {
 import { bytesToHexString, type HubEvent, type Message, MessageType } from "@farcaster/hub-nodejs";
 import { ok } from "neverthrow";
 import type { Queue } from "bullmq";
-import { type AppDb, migrateToLatest } from "./db";
+import { AppDb, migrateToLatest } from "./db";
 import { getQueue, getWorker } from "./worker";
 import { InjectKysely } from 'nestjs-kysely';
 import { insertCasts, deleteCasts } from './processors/cast';
@@ -40,7 +40,6 @@ import { Command, CommandRunner } from 'nest-commander';
 
 @Command({ name: 'shuttle', arguments: '<task>', description: 'Manage the shuttle tasks' })
 export class AppShuttleCommand extends CommandRunner {
-  private readonly logger = new Logger(AppShuttleCommand.name);
 
   constructor(@InjectKysely() private readonly db: DB) {
     super();
@@ -60,39 +59,39 @@ export class AppShuttleCommand extends CommandRunner {
         await this.worker();
         break;
       case 'health':
-        this.logger.log("Health check passed");
+        log.info("Health check passed");
         break;
       default:
-        this.logger.error(`Unknown task: ${task}`);
+        log.error(`Unknown task: ${task}`);
     }
   }
 
   private async start() {
-    this.logger.log(`Creating app connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
+    log.info(`Creating app connecting to: ${DATABASE_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
     const app = AppHandler.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
-    this.logger.log("Starting shuttle");
+    log.info("Starting shuttle");
     await app.start();
   }
 
   private async backfill() {
-    this.logger.log("Starting backfill task");
-    this.logger.debug(`Creating app connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
+    log.info("Starting backfill task");
+    log.debug(`Creating app connecting to: ${DATABASE_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
     const app = AppHandler.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
-    this.logger.debug("Starting shuttle");
+    log.debug("Starting shuttle");
     const fids = BACKFILL_FIDS ? BACKFILL_FIDS.split(",").map((fid) => Number.parseInt(fid)) : [];
-    this.logger.log(`Backfilling fids: ${fids}`);
+    log.info(`Backfilling fids: ${fids}`);
     const backfillQueue = getQueue(app.redis.client);
     await app.backfillFids(fids, backfillQueue);
 
     // Start the worker after initiating a backfill
-    const worker = getWorker(app, app.redis.client, this.logger, CONCURRENCY);
+    const worker = getWorker(app, app.redis.client, log, CONCURRENCY);
     await worker.run();
   }
 
   private async worker() {
-    this.logger.log(`Starting worker connecting to: ${POSTGRES_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
+    log.info(`Starting worker connecting to: ${DATABASE_URL}, ${REDISHOST}:${REDISPORT}, ${HUB_HOST}`);
     const app = AppHandler.create(this.db, `${REDISHOST}:${REDISPORT}`, HUB_HOST, TOTAL_SHARDS, SHARD_INDEX, HUB_SSL);
-    const worker = getWorker(app, app.redis.client, this.logger, CONCURRENCY);
+    const worker = getWorker(app, app.redis.client, log, CONCURRENCY);
     await worker.run();
   }
 }
@@ -100,7 +99,6 @@ export class AppShuttleCommand extends CommandRunner {
 const hubId = "shuttle";
 
 export class AppHandler implements MessageHandler {
-  private readonly logger = new Logger(AppHandler.name);
   private readonly db: DB;
   private hubSubscriber: HubSubscriber;
   private streamConsumer: HubEventStreamConsumer;
@@ -129,7 +127,6 @@ export class AppHandler implements MessageHandler {
     const eventStreamForWrite = new EventStreamConnection(redis.client);
     const eventStreamForRead = new EventStreamConnection(redis.client);
     const shardKey = totalShards === 0 ? "all" : `${shardIndex}`;
-    const log = new Logger(AppHandler.name);
     const hubSubscriber = new EventStreamHubSubscriber(
       hubId,
       hub,
@@ -207,7 +204,7 @@ export class AppHandler implements MessageHandler {
       await AppHandler.processMessagesOfType([message], message.data?.type, appDB)
 
     const messageDesc = wasMissed ? `missed message (${operation})` : `message (${operation})`;
-    this.logger.debug(`${state} ${messageDesc} ${bytesToHexString(message.hash)._unsafeUnwrap()} (type ${message.data?.type})`);
+    log.debug(`${state} ${messageDesc} ${bytesToHexString(message.hash)._unsafeUnwrap()} (type ${message.data?.type})`);
   }
 
   async start() {
@@ -219,7 +216,7 @@ export class AppHandler implements MessageHandler {
     // Sleep 10 seconds to give the subscriber a chance to create the stream for the first time.
     await new Promise((resolve) => setTimeout(resolve, 10_000));
 
-    this.logger.debug("Starting stream consumer");
+    log.debug("Starting stream consumer");
     // Stream consumer reads from the redis stream and inserts them into postgres
     await this.streamConsumer.start(async (event) => {
       void this.processHubEvent(event);
@@ -229,7 +226,7 @@ export class AppHandler implements MessageHandler {
 
   async reconcileFids(fids: number[]) {
     // biome-ignore lint/style/noNonNullAssertion: client is always initialized
-    const reconciler = new MessageReconciliation(this.hubSubscriber.hubClient!, this.db, this.logger);
+    const reconciler = new MessageReconciliation(this.hubSubscriber.hubClient!, this.db, log);
     for (const fid of fids) {
       await reconciler.reconcileMessagesForFid(
         fid,
@@ -238,12 +235,12 @@ export class AppHandler implements MessageHandler {
             await HubEventProcessor.handleMissingMessage(this.db, message, this);
           } else if (prunedInDb || revokedInDb) {
             const messageDesc = prunedInDb ? "pruned" : revokedInDb ? "revoked" : "existing";
-            this.logger.log(`Reconciled ${messageDesc} message ${bytesToHexString(message.hash)._unsafeUnwrap()}`);
+            log.info(`Reconciled ${messageDesc} message ${bytesToHexString(message.hash)._unsafeUnwrap()}`);
           }
         },
         async (message, missingInHub) => {
           if (missingInHub) {
-            this.logger.log(`Message ${bytesToHexString(message.hash)._unsafeUnwrap()} is missing in the hub`);
+            log.info(`Message ${bytesToHexString(message.hash)._unsafeUnwrap()} is missing in the hub`);
           }
         },
       );
@@ -257,20 +254,20 @@ export class AppHandler implements MessageHandler {
       const maxFidResult = await this.hubSubscriber.hubClient?.getFids({ pageSize: 1, reverse: true });
 
       if (maxFidResult === undefined) {
-        this.logger.error("Hub client is not initialized");
+        log.error("Hub client is not initialized");
         throw new Error("Hub client is not initialized");
       }
 
       if (maxFidResult.isErr()) {
-        this.logger.error("Failed to get max fid", maxFidResult.error);
+        log.error("Failed to get max fid", maxFidResult.error);
         throw maxFidResult.error;
       }
       const maxFid = MAX_FID ? Number.parseInt(MAX_FID) : maxFidResult.value.fids[0];
       if (!maxFid) {
-        this.logger.error("Max fid was undefined");
+        log.error("Max fid was undefined");
         throw new Error("Max fid was undefined");
       }
-      this.logger.debug(`Queuing up fids upto: ${maxFid}`);
+      log.debug(`Queuing up fids upto: ${maxFid}`);
       // create an array of arrays in batches of 100 upto maxFid
       const batchSize = 10;
       const fids = Array.from({ length: Math.ceil(maxFid / batchSize) }, (_, i) => i * batchSize).map((fid) => fid + 1);
@@ -282,7 +279,7 @@ export class AppHandler implements MessageHandler {
       await backfillQueue.add("reconcile", { fids });
     }
     await backfillQueue.add("completionMarker", { startedAt });
-    this.logger.debug("Backfill jobs queued");
+    log.debug("Backfill jobs queued");
   }
 
   private async processHubEvent(hubEvent: HubEvent) {
@@ -290,9 +287,9 @@ export class AppHandler implements MessageHandler {
   }
 
   async ensureMigrations() {
-    const result = await migrateToLatest(this.db, this.logger);
+    const result = await migrateToLatest(this.db, log);
     if (result.isErr()) {
-      this.logger.debug("Failed to migrate database", result.error);
+      log.debug("Failed to migrate database", result.error);
       throw result.error;
     }
   }
@@ -300,6 +297,6 @@ export class AppHandler implements MessageHandler {
   async stop() {
     this.hubSubscriber.stop();
     const lastEventId = await this.redis.getLastProcessedEvent(this.hubId);
-    this.logger.log(`Stopped at eventId: ${lastEventId}`);
+    log.info(`Stopped at eventId: ${lastEventId}`);
   }
 }
