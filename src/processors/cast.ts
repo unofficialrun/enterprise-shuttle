@@ -1,14 +1,15 @@
 import { type Message, fromFarcasterTime } from "@farcaster/hub-nodejs";
 
 import { formatCasts } from "./utils.js";
-import type { AppDb } from "../db.js";
+import type { AppDb, Tables } from "../db.js";
 import { log } from "../log.js";
+import { Kysely } from "kysely";
 
 /**
  * Insert casts in the database
  * @param msg Hub event in JSON format
  */
-export async function insertCasts(msgs: Message[], db: AppDb) {
+export async function insertCasts(msgs: Message[], db: Kysely<Tables>) {
   const casts = formatCasts(msgs);
 
   try {
@@ -29,7 +30,7 @@ export async function insertCasts(msgs: Message[], db: AppDb) {
  * @param hash Hash of the cast
  * @param change Object with the fields to update
  */
-export async function deleteCasts(msgs: Message[], db: AppDb) {
+export async function deleteCasts(msgs: Message[], db: Kysely<Tables>) {
   try {
     for (const msg of msgs) {
       const data = msg.data;
