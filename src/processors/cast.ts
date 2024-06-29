@@ -4,7 +4,7 @@ import { formatCasts } from "./utils.js";
 import type { AppDb } from "../db.js";
 import { log } from "../log.js";
 import type { PubSub } from "@google-cloud/pubsub";
-import { MESSAGE_CAST_ADD_TOPIC } from "src/env.js";
+import { MESSAGE_CAST_ADD_TOPIC } from "../env";
 
 /**
  * Insert casts in the database
