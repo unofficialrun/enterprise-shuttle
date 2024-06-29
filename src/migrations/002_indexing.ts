@@ -308,7 +308,7 @@ export const up = async (db: Kysely<any>) => {
         .addColumn('deletedAt', 'timestamptz')
         .addColumn('fid', 'bigint', (col) => col.notNull())
         .addColumn('hash', 'bytea', (col) => col.notNull())
-        .addColumn('name', 'text', (col) => col.notNull())
+        .addColumn('name', 'bytea', (col) => col.notNull())
         .addColumn('owner', 'bytea', (col) => col.notNull())
         .addColumn('signature', 'bytea', (col) => col.notNull())
         .addColumn('type', 'int2', (col) => col.notNull())

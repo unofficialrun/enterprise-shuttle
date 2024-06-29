@@ -3,12 +3,13 @@ import { type Message, fromFarcasterTime } from "@farcaster/hub-nodejs";
 import { formatCasts } from "./utils.js";
 import type { AppDb } from "../db.js";
 import { log } from "../log.js";
+import type { PubSub } from "@google-cloud/pubsub";
 
 /**
  * Insert casts in the database
  * @param msg Hub event in JSON format
  */
-export async function insertCasts(msgs: Message[], db: AppDb) {
+export async function insertCasts(msgs: Message[], db: AppDb, pubsub: PubSub) {
   const casts = formatCasts(msgs);
 
   try {
@@ -17,6 +18,15 @@ export async function insertCasts(msgs: Message[], db: AppDb) {
       .values(casts)
       .onConflict((oc) => oc.column("hash").doNothing())
       .execute();
+
+    for (const msg of msgs) {
+      pubsub.topic("MESSAGE_TYPE_CAST_ADD_2024_05").publishMessage({ data: Buffer.from(JSON.stringify(msg)) }, (err, message) => {
+        if (err) {
+          log.error(err, "ERROR PUBLISHING MESSAGE");
+        }
+        log.debug(`Message published: ${message}`);
+      });
+    }
 
     log.debug("CASTS INSERTED");
   } catch (error) {

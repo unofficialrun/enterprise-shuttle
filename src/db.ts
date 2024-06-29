@@ -1,5 +1,5 @@
 import { type ColumnType, FileMigrationProvider, type Generated, type GeneratedAlways, type Kysely, MigrationInfo, Migrator } from "kysely";
-import { Logger } from "pino";
+import type { Logger } from "pino";
 import { err, ok, type Result } from "neverthrow";
 import path from "node:path";
 import { promises as fs } from "node:fs";
@@ -169,6 +169,24 @@ type UserDataRow = {
     value: string;
 };
 
+// USERNAME PROOFS ---------------------------------------------------------------------------------
+declare const $usernameProofDbId: unique symbol;
+type UsernameProofDbId = string & { [$usernameProofDbId]: true };
+
+type UsernameProofRow = {
+    id: GeneratedAlways<UsernameProofDbId>;
+    createdAt: Generated<Date>;
+    updatedAt: Generated<Date>;
+    timestamp: Date;
+    deletedAt: Date | null;
+    fid: Fid;
+    type: UserNameType;
+    hash: Uint8Array;
+    signature: Uint8Array;
+    name: Uint8Array;
+    owner: Uint8Array;
+};
+
 // EVENTS ------------------------------------------------------------------------------------------
 type EventRow = {
     id: number;
@@ -184,6 +202,7 @@ export interface Tables extends HubTables {
     verifications: VerificationRow;
     userData: UserDataRow;
     events: EventRow;
+    usernameProofs: UsernameProofRow;
 }
 
 export type AppDb = Kysely<Tables>;
