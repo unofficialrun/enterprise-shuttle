@@ -12,6 +12,14 @@
                 "noStaticOnlyClass": "off",
                 "noThisInStatic": "off"
             }
+        },
+        "ignore": [
+            "node_modules/**/*"
+        ]
+    },
+    "javascript": {
+        "parser": {
+            "unsafeParameterDecoratorsEnabled": true
         }
-    }
+    }    
 }

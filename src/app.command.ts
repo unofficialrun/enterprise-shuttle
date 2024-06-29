@@ -28,7 +28,7 @@ import {
 import { bytesToHexString, type HubEvent, type Message, MessageType } from "@farcaster/hub-nodejs";
 import { ok } from "neverthrow";
 import type { Queue } from "bullmq";
-import { AppDb, migrateToLatest } from "./db";
+import { type AppDb, migrateToLatest } from "./db";
 import { getQueue, getWorker } from "./worker";
 import { InjectKysely } from 'nestjs-kysely';
 import { insertCasts, deleteCasts } from './processors/cast';
@@ -37,6 +37,7 @@ import { insertReactions, deleteReactions } from './processors/reaction';
 import { insertUserDatas } from './processors/user-data';
 import { insertVerifications, deleteVerifications } from './processors/verification';
 import { Command, CommandRunner } from 'nest-commander';
+import { PubSub } from '@google-cloud/pubsub';
 
 @Command({ name: 'shuttle', arguments: '<task>', description: 'Manage the shuttle tasks' })
 export class AppShuttleCommand extends CommandRunner {
@@ -104,13 +105,15 @@ export class AppHandler implements MessageHandler {
   private streamConsumer: HubEventStreamConsumer;
   public redis: RedisClient;
   private readonly hubId: string;
+  private pubsub: PubSub;
 
-  constructor(db: DB, redis: RedisClient, hubSubscriber: HubSubscriber, streamConsumer: HubEventStreamConsumer) {
+  constructor(db: DB, redis: RedisClient, hubSubscriber: HubSubscriber, streamConsumer: HubEventStreamConsumer, pubsub: PubSub) {
     this.db = db;
     this.redis = redis;
     this.hubSubscriber = hubSubscriber;
     this.hubId = hubId;
     this.streamConsumer = streamConsumer;
+    this.pubsub = pubsub;
   }
 
   static create(
@@ -139,13 +142,14 @@ export class AppHandler implements MessageHandler {
       shardIndex,
     );
     const streamConsumer = new HubEventStreamConsumer(hub, eventStreamForRead, shardKey);
+    const pubsub = new PubSub();
 
-    return new AppHandler(db, redis, hubSubscriber, streamConsumer);
+    return new AppHandler(db, redis, hubSubscriber, streamConsumer, pubsub);
   }
 
-  static async processMessagesOfType(messages: Message[], type: MessageType, db: AppDb): Promise<void> {
+  static async processMessagesOfType(messages: Message[], type: MessageType, db: AppDb, pubsub: PubSub): Promise<void> {
     if (type === MessageType.CAST_ADD) {
-      await insertCasts(messages, db)
+      await insertCasts(messages, db, pubsub)
     } else if (type === MessageType.CAST_REMOVE) {
       await deleteCasts(messages, db)
     } else if (type === MessageType.VERIFICATION_ADD_ETH_ADDRESS) {
@@ -178,7 +182,7 @@ export class AppHandler implements MessageHandler {
     const appDB = txn as unknown as AppDb;
 
     if (messages.length > 0)
-      await AppHandler.processMessagesOfType(messages, type, appDB);
+      await AppHandler.processMessagesOfType(messages, type, appDB, this.pubsub);
   }
 
   async handleMessageMerge(
@@ -201,7 +205,7 @@ export class AppHandler implements MessageHandler {
     // castAdd, operation=delete, state=deleted (the cast that the remove is removing)
     // castRemove, operation=merge, state=deleted (the actual remove message)
     if (message.data?.type)
-      await AppHandler.processMessagesOfType([message], message.data?.type, appDB)
+      await AppHandler.processMessagesOfType([message], message.data?.type, appDB, this.pubsub);
 
     const messageDesc = wasMissed ? `missed message (${operation})` : `message (${operation})`;
     log.debug(`${state} ${messageDesc} ${bytesToHexString(message.hash)._unsafeUnwrap()} (type ${message.data?.type})`);
