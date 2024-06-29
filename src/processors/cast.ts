@@ -4,6 +4,7 @@ import { formatCasts } from "./utils.js";
 import type { AppDb } from "../db.js";
 import { log } from "../log.js";
 import type { PubSub } from "@google-cloud/pubsub";
+import { MESSAGE_CAST_ADD_TOPIC } from "src/env.js";
 
 /**
  * Insert casts in the database
@@ -20,7 +21,7 @@ export async function insertCasts(msgs: Message[], db: AppDb, pubsub: PubSub) {
       .execute();
 
     for (const msg of msgs) {
-      pubsub.topic("MESSAGE_TYPE_CAST_ADD_2024_05").publishMessage({ data: Buffer.from(JSON.stringify(msg)) }, (err, message) => {
+      pubsub.topic(MESSAGE_CAST_ADD_TOPIC).publishMessage({ data: Buffer.from(JSON.stringify(msg)) }, (err, message) => {
         if (err) {
           log.error(err, "ERROR PUBLISHING MESSAGE");
         }

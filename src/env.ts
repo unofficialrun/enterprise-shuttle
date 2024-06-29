@@ -23,3 +23,7 @@ export const STATSD_HOST = process.env["STATSD_HOST"];
 export const STATSD_METRICS_PREFIX = process.env["STATSD_METRICS_PREFIX"] || "shuttle.";
 
 export const CONCURRENCY = Number.parseInt(process.env["CONCURRENCY"] || "2");
+
+// Topics
+export const MESSAGE_CAST_ADD_TOPIC = process.env["MESSAGE_CAST_ADD_TOPIC"] || "message-cast-add-dev";
+export const MESSAGE_CAST_REMOVE_TOPIC = process.env["MESSAGE_CAST_REMOVE_TOPIC"] || "message-cast-remove-dev";
