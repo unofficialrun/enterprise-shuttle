@@ -151,13 +151,13 @@ export class AppHandler implements MessageHandler {
     if (type === MessageType.CAST_ADD) {
       await insertCasts(messages, db, pubsub)
     } else if (type === MessageType.CAST_REMOVE) {
-      await deleteCasts(messages, db)
+      await deleteCasts(messages, db, pubsub)
     } else if (type === MessageType.VERIFICATION_ADD_ETH_ADDRESS) {
       await insertVerifications(messages, db)
     } else if (type === MessageType.VERIFICATION_REMOVE) {
       await deleteVerifications(messages, db)
     } else if (type === MessageType.USER_DATA_ADD) {
-      await insertUserDatas(messages, db)
+      await insertUserDatas(messages, db, pubsub)
     } else if (type === MessageType.REACTION_ADD) {
       await insertReactions(messages, db)
     } else if (type === MessageType.REACTION_REMOVE) {

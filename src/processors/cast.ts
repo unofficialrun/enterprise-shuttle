@@ -4,7 +4,7 @@ import { formatCasts } from "./utils.js";
 import type { AppDb } from "../db.js";
 import { log } from "../log.js";
 import type { PubSub } from "@google-cloud/pubsub";
-import { MESSAGE_CAST_ADD_TOPIC } from "../env";
+import { MESSAGE_CAST_ADD_TOPIC, MESSAGE_CAST_REMOVE_TOPIC } from "../env";
 
 /**
  * Insert casts in the database
@@ -20,6 +20,8 @@ export async function insertCasts(msgs: Message[], db: AppDb, pubsub: PubSub) {
       .onConflict((oc) => oc.column("hash").doNothing())
       .execute();
 
+    log.debug("CASTS INSERTED");
+
     for (const msg of msgs) {
       pubsub.topic(MESSAGE_CAST_ADD_TOPIC).publishMessage({ data: Buffer.from(JSON.stringify(msg)) }, (err, message) => {
         if (err) {
@@ -28,8 +30,6 @@ export async function insertCasts(msgs: Message[], db: AppDb, pubsub: PubSub) {
         log.debug(`Message published: ${message}`);
       });
     }
-
-    log.debug("CASTS INSERTED");
   } catch (error) {
     log.error(error, "ERROR INSERTING CAST");
   }
@@ -40,7 +40,7 @@ export async function insertCasts(msgs: Message[], db: AppDb, pubsub: PubSub) {
  * @param hash Hash of the cast
  * @param change Object with the fields to update
  */
-export async function deleteCasts(msgs: Message[], db: AppDb) {
+export async function deleteCasts(msgs: Message[], db: AppDb, pubsub) {
   try {
     for (const msg of msgs) {
       const data = msg.data;
@@ -54,6 +54,15 @@ export async function deleteCasts(msgs: Message[], db: AppDb) {
         })
         .where("hash", "=", data.castRemoveBody?.targetHash)
         .execute();
+    }
+
+    for (const msg of msgs) {
+      pubsub.topic(MESSAGE_CAST_REMOVE_TOPIC).publishMessage({ data: Buffer.from(JSON.stringify(msg)) }, (err, message) => {
+        if (err) {
+          log.error(err, "ERROR PUBLISHING MESSAGE");
+        }
+        log.debug(`Message published: ${message}`);
+      });
     }
 
     log.debug("CASTS DELETED");
