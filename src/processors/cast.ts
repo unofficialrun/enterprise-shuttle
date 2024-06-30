@@ -56,6 +56,8 @@ export async function deleteCasts(msgs: Message[], db: AppDb, pubsub) {
         .execute();
     }
 
+    log.debug("CASTS DELETED");
+
     for (const msg of msgs) {
       pubsub.topic(MESSAGE_CAST_REMOVE_TOPIC).publishMessage({ data: Buffer.from(JSON.stringify(msg)) }, (err, message) => {
         if (err) {
@@ -64,8 +66,6 @@ export async function deleteCasts(msgs: Message[], db: AppDb, pubsub) {
         log.debug(`Message published: ${message}`);
       });
     }
-
-    log.debug("CASTS DELETED");
   } catch (error) {
     log.error(error, "ERROR DELETING CAST");
   }

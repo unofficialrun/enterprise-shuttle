@@ -37,4 +37,4 @@ export const MESSAGE_REACTION_REMOVE_TOPIC = process.env["MESSAGE_REACTION_REMOV
 export const MESSAGE_USER_DATA_ADD_TOPIC = process.env["MESSAGE_USER_DATA_ADD_TOPIC"] || "message-user-data-add-dev";
 
 export const MESSAGE_VERIFICATION_ADD_ETH_TOPIC = process.env["MESSAGE_VERIFICATION_ADD_ETH_TOPIC"] || "message-verification-add-eth-dev";
-export const MESSAGE_VERIFICATION_REMOVE = process.env["MESSAGE_VERIFICATION_REMOVE"] || "message-verification-remove-dev";
+export const MESSAGE_VERIFICATION_REMOVE_TOPIC = process.env["MESSAGE_VERIFICATION_REMOVE"] || "message-verification-remove-dev";

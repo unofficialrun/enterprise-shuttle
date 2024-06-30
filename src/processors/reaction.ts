@@ -2,12 +2,14 @@ import { type Message, fromFarcasterTime } from "@farcaster/hub-nodejs";
 import { formatReactions } from "./utils";
 import type { AppDb } from "../db";
 import { log } from "../log";
+import { MESSAGE_REACTION_ADD_TOPIC, MESSAGE_REACTION_REMOVE_TOPIC } from "../env";
+import type { PubSub } from "@google-cloud/pubsub";
 
 /**
  * Insert a reaction in the database
  * @param msg Hub event in JSON format
  */
-export async function insertReactions(msgs: Message[], db: AppDb) {
+export async function insertReactions(msgs: Message[], db: AppDb, pubsub: PubSub) {
   const reactions = formatReactions(msgs);
 
   try {
@@ -18,12 +20,21 @@ export async function insertReactions(msgs: Message[], db: AppDb) {
       .execute();
 
     log.debug("REACTIONS INSERTED");
+
+    for (const msg of msgs) {
+      pubsub.topic(MESSAGE_REACTION_ADD_TOPIC).publishMessage({ data: Buffer.from(JSON.stringify(msg)) }, (err, message) => {
+        if (err) {
+          log.error(err, "ERROR PUBLISHING MESSAGE");
+        }
+        log.debug(`Message published: ${message}`);
+      });
+    }
   } catch (error) {
     log.error(error, "ERROR INSERTING REACTIONS");
   }
 }
 
-export async function deleteReactions(msgs: Message[], db: AppDb) {
+export async function deleteReactions(msgs: Message[], db: AppDb, pubsub: PubSub) {
   try {
     for (const msg of msgs) {
       const data = msg.data;
@@ -57,6 +68,15 @@ export async function deleteReactions(msgs: Message[], db: AppDb) {
     }
 
     log.debug("REACTIONS DELETED");
+
+    for (const msg of msgs) {
+      pubsub.topic(MESSAGE_REACTION_REMOVE_TOPIC).publishMessage({ data: Buffer.from(JSON.stringify(msg)) }, (err, message) => {
+        if (err) {
+          log.error(err, "ERROR PUBLISHING MESSAGE");
+        }
+        log.debug(`Message published: ${message}`);
+      });
+    }
   } catch (error) {
     log.error(error, "ERROR DELETING REACTION");
   }
