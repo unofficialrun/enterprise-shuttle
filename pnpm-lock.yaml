@@ -15,11 +15,11 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       '@farcaster/hub-nodejs':
-        specifier: ^0.11.18
-        version: 0.11.18(typescript@5.4.5)
+        specifier: ^0.11.19
+        version: 0.11.19(typescript@5.4.5)
       '@farcaster/shuttle':
-        specifier: ^0.4.2
-        version: 0.4.2(typescript@5.4.5)
+        specifier: ^0.5.1
+        version: 0.5.1(typescript@5.4.5)
       '@figma/hot-shots':
         specifier: ^9.0.0-figma.1
         version: 9.0.0-figma.1
@@ -442,11 +442,11 @@ packages:
     resolution: {integrity: sha512-wVbdYvZL41SuCOFOUPsso16Ld/CZtjhVE0dJr8xgR2AygniI7YR9a9lmtIZS94/LUxL84JLCAkUJzTIpPKCagQ==}
     engines: {node: '>=10.0.0'}
 
-  '@farcaster/hub-nodejs@0.11.18':
-    resolution: {integrity: sha512-S3AkPIUZHjtCuVLOgvqxwHFqx3+cdat0cErtIzGXeTRHceOO/SgJ/9Ul1sibQIAYEbiFTPNwToH/YkLJzv5EYw==}
+  '@farcaster/hub-nodejs@0.11.19':
+    resolution: {integrity: sha512-vDHSk1qBihP+aIHzoTup77aNIt60KD1ApJFvdej3kfIojVvLNQnyJLlnJmIX66tutqvpgNsOy5EEL9BL91XKcQ==}
 
-  '@farcaster/shuttle@0.4.2':
-    resolution: {integrity: sha512-jLNuEiiK/rfuNyA8e/yslhbMyH6YAiXqZAnpo4NOtlUBZM92xHJc61cX/sC8kwhwN+yVisNpsbwB+N1r9B2RKg==}
+  '@farcaster/shuttle@0.5.1':
+    resolution: {integrity: sha512-rzyUp2XFgvHcVj0cXZ9Ss0xxP60chkr8wK21xFjTuG4g6awBJmsBk4ad5XbgiJLCoehugDy+Zpc0Gs5NJykQLA==}
 
   '@fig/complete-commander@3.0.0':
     resolution: {integrity: sha512-jxiF1O+xiqdM7jECmTTrSO5w35iKsVRcSCz9mu20R4bFgLJS+61VNHw2A3EY7gU1kKlLJye0TmkyTfAoPhIq7A==}
@@ -3927,7 +3927,7 @@ snapshots:
 
   '@farcaster/hot-shots@10.0.0': {}
 
-  '@farcaster/hub-nodejs@0.11.18(typescript@5.4.5)':
+  '@farcaster/hub-nodejs@0.11.19(typescript@5.4.5)':
     dependencies:
       '@farcaster/core': 0.14.17(typescript@5.4.5)
       '@grpc/grpc-js': 1.8.22
@@ -3939,10 +3939,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@farcaster/shuttle@0.4.2(typescript@5.4.5)':
+  '@farcaster/shuttle@0.5.1(typescript@5.4.5)':
     dependencies:
       '@farcaster/hot-shots': 10.0.0
-      '@farcaster/hub-nodejs': 0.11.18(typescript@5.4.5)
+      '@farcaster/hub-nodejs': 0.11.19(typescript@5.4.5)
       commander: 11.1.0
       ioredis: 5.4.1
       kysely: 0.26.3

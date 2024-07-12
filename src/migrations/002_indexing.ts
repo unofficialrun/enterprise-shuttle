@@ -257,6 +257,7 @@ export const up = async (db: Kysely<any>) => {
         .addColumn('fid', 'bigint', (col) => col.notNull())
         .addColumn('hash', 'bytea', (col) => col.notNull())
         .addColumn('signerAddress', 'bytea', (col) => col.notNull())
+        .addColumn('protocol', 'int2', (col) => col.notNull())
         .addColumn('blockHash', 'bytea', (col) => col.notNull())
         .addColumn('signature', 'bytea', (col) => col.notNull())
         .addUniqueConstraint('verifications_signer_address_fid_unique', [

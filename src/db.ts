@@ -4,7 +4,7 @@ import { err, ok, type Result } from "neverthrow";
 import path from "node:path";
 import { promises as fs } from "node:fs";
 import type { HubTables, Fid, Hex, DB } from "@farcaster/shuttle";
-import type { UserNameType, ReactionType, UserDataType, CastType } from "@farcaster/hub-nodejs";
+import type { UserNameType, ReactionType, UserDataType, CastType, Protocol } from "@farcaster/hub-nodejs";
 
 const createMigrator = async (db: Kysely<Tables>, log: Logger) => {
     const currentDir = path.dirname(__filename); // CommonJS equivalent
@@ -148,6 +148,7 @@ type VerificationRow = {
     deletedAt: Date | null;
     fid: Fid;
     hash: Uint8Array;
+    protocol: Protocol;
     signerAddress: Uint8Array;
     blockHash: Uint8Array;
     signature: Uint8Array;

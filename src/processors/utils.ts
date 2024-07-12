@@ -79,6 +79,7 @@ export function formatVerifications(msgs: Message[]) {
       fid: data.fid,
       hash: msg.hash,
       signerAddress: addAddressBody.address,
+      protocol: addAddressBody.protocol,
       blockHash: addAddressBody.blockHash,
       signature: addAddressBody.claimSignature,
     } satisfies Insertable<Tables['verifications']>
