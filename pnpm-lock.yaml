@@ -18,8 +18,8 @@ importers:
         specifier: ^0.11.19
         version: 0.11.19(typescript@5.4.5)
       '@farcaster/shuttle':
-        specifier: ^0.5.1
-        version: 0.5.1(typescript@5.4.5)
+        specifier: ^0.5.5
+        version: 0.5.5(typescript@5.4.5)
       '@figma/hot-shots':
         specifier: ^9.0.0-figma.1
         version: 9.0.0-figma.1
@@ -445,8 +445,8 @@ packages:
   '@farcaster/hub-nodejs@0.11.19':
     resolution: {integrity: sha512-vDHSk1qBihP+aIHzoTup77aNIt60KD1ApJFvdej3kfIojVvLNQnyJLlnJmIX66tutqvpgNsOy5EEL9BL91XKcQ==}
 
-  '@farcaster/shuttle@0.5.1':
-    resolution: {integrity: sha512-rzyUp2XFgvHcVj0cXZ9Ss0xxP60chkr8wK21xFjTuG4g6awBJmsBk4ad5XbgiJLCoehugDy+Zpc0Gs5NJykQLA==}
+  '@farcaster/shuttle@0.5.5':
+    resolution: {integrity: sha512-tHCWIwF5PAEyx+f7VBP5pB26dYRG/QO45xPoJNvnYXFALrBWnA2SCw6WacU7s6xqCzT2gxjlcjueRojIEmxJXQ==}
 
   '@fig/complete-commander@3.0.0':
     resolution: {integrity: sha512-jxiF1O+xiqdM7jECmTTrSO5w35iKsVRcSCz9mu20R4bFgLJS+61VNHw2A3EY7gU1kKlLJye0TmkyTfAoPhIq7A==}
@@ -1461,6 +1461,10 @@ packages:
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
+
+  commander@11.0.0:
+    resolution: {integrity: sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==}
+    engines: {node: '>=16'}
 
   commander@11.1.0:
     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
@@ -3939,11 +3943,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@farcaster/shuttle@0.5.1(typescript@5.4.5)':
+  '@farcaster/shuttle@0.5.5(typescript@5.4.5)':
     dependencies:
       '@farcaster/hot-shots': 10.0.0
       '@farcaster/hub-nodejs': 0.11.19(typescript@5.4.5)
-      commander: 11.1.0
+      commander: 11.0.0
+      dotenv: 16.4.5
       ioredis: 5.4.1
       kysely: 0.26.3
       neverthrow: 6.2.1
@@ -5187,6 +5192,8 @@ snapshots:
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
+
+  commander@11.0.0: {}
 
   commander@11.1.0: {}
 
