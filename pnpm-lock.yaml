@@ -15,8 +15,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       '@farcaster/hub-nodejs':
-        specifier: ^0.11.19
-        version: 0.11.19(typescript@5.4.5)
+        specifier: ^0.11.21
+        version: 0.11.21(typescript@5.4.5)
       '@farcaster/shuttle':
         specifier: ^0.5.5
         version: 0.5.5(typescript@5.4.5)
@@ -435,15 +435,15 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@farcaster/core@0.14.17':
-    resolution: {integrity: sha512-fO86zL0nTvl+vZPGbeJs+VLYJEX2ZnTD6qjkUWJsn0JBGSQVnKg+mFN5xf5LPkmhP5lNNcHVjoKkVKDd+dgr6A==}
+  '@farcaster/core@0.14.19':
+    resolution: {integrity: sha512-ks5Tn9HRDXqM18fFaZM2a70C03gMjR/yXLJHtmYqN9zIk34S45zpQy4PYXi0modNc/JUda2TE/jQ2rm88S9oiQ==}
 
   '@farcaster/hot-shots@10.0.0':
     resolution: {integrity: sha512-wVbdYvZL41SuCOFOUPsso16Ld/CZtjhVE0dJr8xgR2AygniI7YR9a9lmtIZS94/LUxL84JLCAkUJzTIpPKCagQ==}
     engines: {node: '>=10.0.0'}
 
-  '@farcaster/hub-nodejs@0.11.19':
-    resolution: {integrity: sha512-vDHSk1qBihP+aIHzoTup77aNIt60KD1ApJFvdej3kfIojVvLNQnyJLlnJmIX66tutqvpgNsOy5EEL9BL91XKcQ==}
+  '@farcaster/hub-nodejs@0.11.21':
+    resolution: {integrity: sha512-Ln7p8aEfaC1OfCsb2JYaGjvZaX6Qtg0VCAMkuOpraklOXPFWOb94/Kio+LV8EnkHy+WeO7WCadrxBvecmxCSLQ==}
 
   '@farcaster/shuttle@0.5.5':
     resolution: {integrity: sha512-tHCWIwF5PAEyx+f7VBP5pB26dYRG/QO45xPoJNvnYXFALrBWnA2SCw6WacU7s6xqCzT2gxjlcjueRojIEmxJXQ==}
@@ -3916,7 +3916,7 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
-  '@farcaster/core@0.14.17(typescript@5.4.5)':
+  '@farcaster/core@0.14.19(typescript@5.4.5)':
     dependencies:
       '@noble/curves': 1.4.0
       '@noble/hashes': 1.4.0
@@ -3931,9 +3931,9 @@ snapshots:
 
   '@farcaster/hot-shots@10.0.0': {}
 
-  '@farcaster/hub-nodejs@0.11.19(typescript@5.4.5)':
+  '@farcaster/hub-nodejs@0.11.21(typescript@5.4.5)':
     dependencies:
-      '@farcaster/core': 0.14.17(typescript@5.4.5)
+      '@farcaster/core': 0.14.19(typescript@5.4.5)
       '@grpc/grpc-js': 1.8.22
       '@noble/hashes': 1.4.0
       neverthrow: 6.2.1
@@ -3946,7 +3946,7 @@ snapshots:
   '@farcaster/shuttle@0.5.5(typescript@5.4.5)':
     dependencies:
       '@farcaster/hot-shots': 10.0.0
-      '@farcaster/hub-nodejs': 0.11.19(typescript@5.4.5)
+      '@farcaster/hub-nodejs': 0.11.21(typescript@5.4.5)
       commander: 11.0.0
       dotenv: 16.4.5
       ioredis: 5.4.1
