@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@commander-js/extra-typings':
         specifier: ^12.1.0
-        version: 12.1.0(commander@11.1.0)
+        version: 12.1.0(commander@12.1.0)
       '@farcaster/hot-shots':
         specifier: ^10.0.0
         version: 10.0.0
@@ -18,8 +18,8 @@ importers:
         specifier: ^0.11.21
         version: 0.11.21(typescript@5.4.5)
       '@farcaster/shuttle':
-        specifier: ^0.5.5
-        version: 0.5.5(typescript@5.4.5)
+        specifier: ^0.5.7
+        version: 0.5.7(typescript@5.4.5)
       '@figma/hot-shots':
         specifier: ^9.0.0-figma.1
         version: 9.0.0-figma.1
@@ -50,6 +50,9 @@ importers:
       bullmq:
         specifier: ^5.7.12
         version: 5.7.13
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -445,8 +448,8 @@ packages:
   '@farcaster/hub-nodejs@0.11.21':
     resolution: {integrity: sha512-Ln7p8aEfaC1OfCsb2JYaGjvZaX6Qtg0VCAMkuOpraklOXPFWOb94/Kio+LV8EnkHy+WeO7WCadrxBvecmxCSLQ==}
 
-  '@farcaster/shuttle@0.5.5':
-    resolution: {integrity: sha512-tHCWIwF5PAEyx+f7VBP5pB26dYRG/QO45xPoJNvnYXFALrBWnA2SCw6WacU7s6xqCzT2gxjlcjueRojIEmxJXQ==}
+  '@farcaster/shuttle@0.5.7':
+    resolution: {integrity: sha512-LebGHtEyak2b6aHDh6pWvf6dY4dnueA5a1hdurul4yqkQQsZGu4oujo64KZ33xc9KnCblhJglYqZu1heEvBEJw==}
 
   '@fig/complete-commander@3.0.0':
     resolution: {integrity: sha512-jxiF1O+xiqdM7jECmTTrSO5w35iKsVRcSCz9mu20R4bFgLJS+61VNHw2A3EY7gU1kKlLJye0TmkyTfAoPhIq7A==}
@@ -1470,6 +1473,10 @@ packages:
     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
     engines: {node: '>=16'}
 
+  commander@12.1.0:
+    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
+    engines: {node: '>=18'}
+
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
 
@@ -1955,7 +1962,6 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
@@ -2085,7 +2091,6 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
-    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -3259,7 +3264,6 @@ packages:
   superagent@8.1.2:
     resolution: {integrity: sha512-6WTxW1EB6yCxV5VFOIPQruWGHqc3yI7hEmZK6h+pyk69Lk/Ut7rLUY6W/ONF2MjBuGjvmMiIpsrVJ2vjrHlslA==}
     engines: {node: '>=6.4.0 <13 || >=14'}
-    deprecated: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
 
   supertest@6.3.4:
     resolution: {integrity: sha512-erY3HFDG0dPnhw4U+udPfrzXa4xhSG+n4rxfRuZWCUvjFWwKl+OxWf/7zk50s84/fAAs7vf5QAb9uRa0cCykxw==}
@@ -3885,9 +3889,9 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
-  '@commander-js/extra-typings@12.1.0(commander@11.1.0)':
+  '@commander-js/extra-typings@12.1.0(commander@12.1.0)':
     dependencies:
-      commander: 11.1.0
+      commander: 12.1.0
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -3943,7 +3947,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@farcaster/shuttle@0.5.5(typescript@5.4.5)':
+  '@farcaster/shuttle@0.5.7(typescript@5.4.5)':
     dependencies:
       '@farcaster/hot-shots': 10.0.0
       '@farcaster/hub-nodejs': 0.11.21(typescript@5.4.5)
@@ -5196,6 +5200,8 @@ snapshots:
   commander@11.0.0: {}
 
   commander@11.1.0: {}
+
+  commander@12.1.0: {}
 
   commander@2.20.3: {}
 
