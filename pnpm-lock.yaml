@@ -18,8 +18,8 @@ importers:
         specifier: ^0.11.22
         version: 0.11.22(typescript@5.4.5)
       '@farcaster/shuttle':
-        specifier: ^0.5.8
-        version: 0.5.8(typescript@5.4.5)
+        specifier: ^0.5.10
+        version: 0.5.10(typescript@5.4.5)
       '@figma/hot-shots':
         specifier: ^9.0.0-figma.1
         version: 9.0.0-figma.1
@@ -448,8 +448,8 @@ packages:
   '@farcaster/hub-nodejs@0.11.22':
     resolution: {integrity: sha512-+UfDH5xWDczDEgyvyW2Yve/NRHxb+dVDIxjaK+gRG7qUYi7oJABqnrjGxvRn9CQjHT+Sb4QbbRpubT1GWmuOrg==}
 
-  '@farcaster/shuttle@0.5.8':
-    resolution: {integrity: sha512-WiNB8r3lbYd32w47qhbDJFXNcFIQRzGzwKcqULfcgxzdJvTUccr0k+E29mmMBlIr/Cqh278abSOs0+buyzGXqQ==}
+  '@farcaster/shuttle@0.5.10':
+    resolution: {integrity: sha512-m6FlohRq+ogcQzuTvN9WC/fjw17naQTWGtphjkKJi5mdBXbElyNK0oxqe43lW1GYnLIH6ZUAeoRyIzTI9f233A==}
 
   '@fig/complete-commander@3.0.0':
     resolution: {integrity: sha512-jxiF1O+xiqdM7jECmTTrSO5w35iKsVRcSCz9mu20R4bFgLJS+61VNHw2A3EY7gU1kKlLJye0TmkyTfAoPhIq7A==}
@@ -3947,7 +3947,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@farcaster/shuttle@0.5.8(typescript@5.4.5)':
+  '@farcaster/shuttle@0.5.10(typescript@5.4.5)':
     dependencies:
       '@farcaster/hot-shots': 10.0.0
       '@farcaster/hub-nodejs': 0.11.22(typescript@5.4.5)
